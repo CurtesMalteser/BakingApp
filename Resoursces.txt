@@ -1,0 +1,5 @@
+Api POJOs
+http://www.jsonschema2pojo.org/
+
+Cake PalceHolder
+http://simpleicon.com/pestry_cake.html
