@@ -10,9 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.curtesmalteser.bakingapp.R;
-import com.curtesmalteser.bakingapp.api.model.BakingModel;
-import com.curtesmalteser.bakingapp.api.retrofit.BakingAPIClient;
-import com.curtesmalteser.bakingapp.api.retrofit.BakingAPIInterface;
+import com.curtesmalteser.bakingapp.data.model.BakingModel;
+import com.curtesmalteser.bakingapp.data.retrofit.BakingAPIClient;
+import com.curtesmalteser.bakingapp.data.retrofit.BakingAPIInterface;
 
 import java.util.ArrayList;
 import java.util.List;

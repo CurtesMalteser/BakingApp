@@ -1,6 +1,6 @@
-package com.curtesmalteser.bakingapp.api.retrofit;
+package com.curtesmalteser.bakingapp.data.retrofit;
 
-import com.curtesmalteser.bakingapp.api.model.BakingModel;
+import com.curtesmalteser.bakingapp.data.model.BakingModel;
 
 import java.util.List;
 

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
-import com.curtesmalteser.bakingapp.api.model.BakingModel;
+import com.curtesmalteser.bakingapp.data.model.BakingModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
