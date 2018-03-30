@@ -3,6 +3,7 @@ package com.curtesmalteser.bakingapp.data.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -19,7 +20,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         indices = @Index(value = "recipeId"))
 public class Ingredient {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     private int id;
     @SerializedName("quantity")
     @Expose
@@ -32,6 +33,14 @@ public class Ingredient {
     private String ingredient;
 
     private int recipeId;
+
+    @Ignore
+    public Ingredient(Double quantity, String measure, String ingredient, int recipeId) {
+        this.quantity = quantity;
+        this.measure = measure;
+        this.ingredient = ingredient;
+        this.recipeId = recipeId;
+    }
 
     public Ingredient(int id, Double quantity, String measure, String ingredient, int recipeId) {
         this.id = id;

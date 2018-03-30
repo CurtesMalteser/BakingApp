@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class RecipeClassDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract void insertRecipes(ArrayList<BakingModel> insertRecipes);
+    abstract void insertRecipes(BakingModel insertRecipes);
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -50,7 +50,7 @@ public abstract class RecipeClassDao {
     abstract void deleteSteps();
 
     @Transaction
-    void updateData(ArrayList<BakingModel> recipes, ArrayList<Ingredient> ingredients, ArrayList<Step> steps) {
+    public void updateData(BakingModel recipes, ArrayList<Ingredient> ingredients, ArrayList<Step> steps) {
         deleteRecipes();
         deleteIngredients();
         deleteSteps();

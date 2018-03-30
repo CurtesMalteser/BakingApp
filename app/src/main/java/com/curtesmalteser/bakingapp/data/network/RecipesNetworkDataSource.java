@@ -47,11 +47,11 @@ public class RecipesNetworkDataSource {
         return sInstance;
     }
 
-    LiveData<ArrayList<BakingModel>> getRecipes() {
+    public LiveData<ArrayList<BakingModel>> getRecipes() {
         return mDownloadedRecipes;
     }
 
-    private void fetchRecipes() {
+    public void fetchRecipes() {
         mExecutors.networkIO().execute(() -> {
             BakingAPIInterface apiInterface = BakingAPIClient.getClient().create(BakingAPIInterface.class);
             Call<List<BakingModel>> call;

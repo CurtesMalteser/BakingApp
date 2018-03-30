@@ -3,6 +3,7 @@ package com.curtesmalteser.bakingapp.data.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -39,6 +40,16 @@ public class Step {
     private String thumbnailURL;
 
     private int recipeId;
+
+    @Ignore
+    public Step(Integer stepNumber, String shortDescription, String description, String videoURL, String thumbnailURL, int recipeId) {
+        this.stepNumber = stepNumber;
+        this.shortDescription = shortDescription;
+        this.description = description;
+        this.videoURL = videoURL;
+        this.thumbnailURL = thumbnailURL;
+        this.recipeId = recipeId;
+    }
 
     public Step(int id, Integer stepNumber, String shortDescription, String description, String videoURL, String thumbnailURL, int recipeId) {
         this.id = id;
