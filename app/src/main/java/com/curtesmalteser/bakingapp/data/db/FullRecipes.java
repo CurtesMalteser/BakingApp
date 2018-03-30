@@ -14,7 +14,7 @@ import java.util.List;
  * Created by António "Curtes Malteser" Bastião on 25/03/2018.
  */
 
-class FullRecipes {
+public class FullRecipes {
 
     @Embedded
     public BakingModel bakingModel;

@@ -1,5 +1,6 @@
 package com.curtesmalteser.bakingapp.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -11,8 +12,9 @@ import android.util.Log;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.model.BakingModel;
-import com.curtesmalteser.bakingapp.data.retrofit.BakingAPIClient;
-import com.curtesmalteser.bakingapp.data.retrofit.BakingAPIInterface;
+import com.curtesmalteser.bakingapp.data.network.BakingAPIClient;
+import com.curtesmalteser.bakingapp.data.network.BakingAPIInterface;
+import com.curtesmalteser.bakingapp.viewmodel.RecipeActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,8 @@ public class RecipeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
+        RecipeActivityViewModel mViewModel = ViewModelProviders.of(this).get(RecipeActivityViewModel.class);
+
         ButterKnife.bind(this);
 
         boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
@@ -55,7 +59,9 @@ public class RecipeActivity extends AppCompatActivity
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
 
-        BakingAPIInterface apiInterface = BakingAPIClient.getClient().create(BakingAPIInterface.class);
+        mViewModel.getRecipes();
+
+        /*BakingAPIInterface apiInterface = BakingAPIClient.getClient().create(BakingAPIInterface.class);
         Call<List<BakingModel>> call;
 
         call = apiInterface.getRecipes();
@@ -76,7 +82,7 @@ public class RecipeActivity extends AppCompatActivity
             public void onFailure(Call<List<BakingModel>> call, Throwable t) {
                 Log.e(TAG, t.toString());
             }
-        });
+        });*/
     }
 
     @Override

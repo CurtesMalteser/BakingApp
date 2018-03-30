@@ -1,4 +1,4 @@
-package com.curtesmalteser.bakingapp.data.retrofit;
+package com.curtesmalteser.bakingapp.data.network;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

@@ -1,4 +1,4 @@
-package com.curtesmalteser.bakingapp.data.retrofit;
+package com.curtesmalteser.bakingapp.data.network;
 
 import com.curtesmalteser.bakingapp.data.model.BakingModel;
 
