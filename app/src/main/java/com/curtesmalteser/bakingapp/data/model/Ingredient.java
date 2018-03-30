@@ -20,8 +20,9 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         indices = @Index(value = "recipeId"))
 public class Ingredient {
 
-    @PrimaryKey()
-    private int id;
+    @PrimaryKey(autoGenerate = true)
+    private int columnId;
+
     @SerializedName("quantity")
     @Expose
     private Double quantity;
@@ -42,16 +43,16 @@ public class Ingredient {
         this.recipeId = recipeId;
     }
 
-    public Ingredient(int id, Double quantity, String measure, String ingredient, int recipeId) {
-        this.id = id;
+    public Ingredient(int columnId, Double quantity, String measure, String ingredient, int recipeId) {
+        this.columnId = columnId;
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
         this.recipeId = recipeId;
     }
 
-    public int getId() {
-        return id;
+    public int getColumnId() {
+        return columnId;
     }
 
     public Double getQuantity() {

@@ -1,8 +1,10 @@
 package com.curtesmalteser.bakingapp.data;
 
 import android.arch.lifecycle.LiveData;
+import android.util.Log;
 
 import com.curtesmalteser.bakingapp.AppExecutors;
+import com.curtesmalteser.bakingapp.data.db.FullRecipes;
 import com.curtesmalteser.bakingapp.data.db.RecipeClassDao;
 import com.curtesmalteser.bakingapp.data.model.BakingModel;
 import com.curtesmalteser.bakingapp.data.model.Ingredient;
@@ -10,6 +12,7 @@ import com.curtesmalteser.bakingapp.data.model.Step;
 import com.curtesmalteser.bakingapp.data.network.RecipesNetworkDataSource;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by António "Curtes Malteser" Bastião on 30/03/2018.
@@ -30,18 +33,18 @@ public class Repository {
         this.mRecipesNetworkDataSource = mRecipesNetworkDataSource;
         this.mExecutors = mExecutors;
 
-        LiveData<ArrayList<BakingModel>> networkData = mRecipesNetworkDataSource.getRecipes();
+        LiveData<List<BakingModel>> networkData = mRecipesNetworkDataSource.getRecipes();
         networkData.observeForever(bakingModels ->
                 mExecutors.diskIO().execute(() -> {
+                    mDao.deleteData();
                     for (int i = 0; i < bakingModels.size(); i++) {
-
-                        ArrayList<Ingredient> ingredients = new ArrayList<>();
+                        List<Ingredient> ingredients = new ArrayList<>();
                         for (Ingredient ingredient : bakingModels.get(i).getIngredients()) {
                             ingredients.add(new Ingredient(ingredient.getQuantity(), ingredient.getMeasure(),
                                     ingredient.getIngredient(), bakingModels.get(i).getId()));
                         }
 
-                        ArrayList<Step> steps = new ArrayList<>();
+                        List<Step> steps = new ArrayList<>();
                         for (Step step : bakingModels.get(i).getSteps()) {
                             steps.add(new Step(step.getStepNumber(), step.getShortDescription(), step.getDescription(),
                                     step.getVideoURL(), step.getThumbnailURL(), bakingModels.get(i).getId()));
@@ -53,9 +56,9 @@ public class Repository {
         );
     }
 
-    synchronized static Repository getsInstance(RecipeClassDao recipeClassDao,
-                                                RecipesNetworkDataSource recipesNetworkDataSource,
-                                                AppExecutors executors) {
+    synchronized static Repository getInstance(RecipeClassDao recipeClassDao,
+                                               RecipesNetworkDataSource recipesNetworkDataSource,
+                                               AppExecutors executors) {
         if (sInstance == null) {
             synchronized (LOCK) {
                 sInstance = new Repository(recipeClassDao,
@@ -66,8 +69,13 @@ public class Repository {
         return sInstance;
     }
 
-    private synchronized void intializeData() {
+    public synchronized void initializeData() {
         mExecutors.diskIO().execute(this::startFetchRecipes);
+    }
+
+    public LiveData<List<FullRecipes>> getAllRecipes() {
+        initializeData();
+        return mDao.getRecipes();
     }
 
     private void startFetchRecipes() {

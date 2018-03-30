@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
+import com.curtesmalteser.bakingapp.data.db.FullRecipes;
 import com.curtesmalteser.bakingapp.data.model.BakingModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -28,14 +29,14 @@ import butterknife.ButterKnife;
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesViewHolder> {
 
     private Context mContext;
-    private ArrayList<BakingModel> mRecipesArrayList;
+    private ArrayList<FullRecipes> mRecipesArrayList;
     final private ListItemClickListener mOnClickListener;
 
     public interface ListItemClickListener {
-        void onListItemClick(BakingModel bakingModel);
+        void onListItemClick(FullRecipes bakingModel);
     }
 
-    public RecipesAdapter(Context context, ArrayList<BakingModel> recipesArrayList,
+    public RecipesAdapter(Context context, ArrayList<FullRecipes> recipesArrayList,
                           ListItemClickListener listener) {
         this.mContext = context;
         this.mRecipesArrayList = recipesArrayList;
@@ -85,16 +86,16 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            BakingModel bakingModel = mRecipesArrayList.get(clickedPosition);
+            FullRecipes bakingModel = mRecipesArrayList.get(clickedPosition);
             mOnClickListener.onListItemClick(bakingModel);
         }
 
         public void bind(int position) {
-            final BakingModel model = mRecipesArrayList.get(position);
+            final FullRecipes model = mRecipesArrayList.get(position);
 
-            if (model.getImage() != null && !model.getImage().equals("")) {
+            if (model.bakingModel.getImage() != null && !model.bakingModel.getImage().equals("")) {
                 Picasso.with(mContext)
-                        .load(model.getImage())
+                        .load(model.bakingModel.getImage())
                         .networkPolicy(NetworkPolicy.OFFLINE)
                         .into(cakeImage, new Callback() {
                             @Override
@@ -106,7 +107,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
                             public void onError() {
                                 //Try again online if cache failed
                                 Picasso.with(mContext)
-                                        .load(model.getImage())
+                                        .load(model.bakingModel.getImage())
                                         .error(R.drawable.ic_pastry_cake)
                                         .into(cakeImage, new Callback() {
                                             @Override
@@ -126,7 +127,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
                 cakeImage.setImageResource(R.drawable.ic_pastry_cake);
             }
 
-            recipeName.setText(String.valueOf(model.getName()));
+            recipeName.setText(String.valueOf(model.bakingModel.getName()));
         }
     }
 }

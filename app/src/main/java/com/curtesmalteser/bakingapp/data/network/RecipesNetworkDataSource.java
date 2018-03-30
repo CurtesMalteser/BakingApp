@@ -29,7 +29,7 @@ public class RecipesNetworkDataSource {
     private static RecipesNetworkDataSource sInstance;
     private final Context mContext;
 
-    private final MutableLiveData<ArrayList<BakingModel>> mDownloadedRecipes;
+    private final MutableLiveData<List<BakingModel>> mDownloadedRecipes;
     private final AppExecutors mExecutors;
 
     public RecipesNetworkDataSource(Context mContext, AppExecutors mExecutors) {
@@ -47,7 +47,7 @@ public class RecipesNetworkDataSource {
         return sInstance;
     }
 
-    public LiveData<ArrayList<BakingModel>> getRecipes() {
+    public LiveData<List<BakingModel>> getRecipes() {
         return mDownloadedRecipes;
     }
 
@@ -60,13 +60,18 @@ public class RecipesNetworkDataSource {
 
             call.enqueue(new Callback<List<BakingModel>>() {
                 @Override
-                public void onResponse
-                        (Call<List<BakingModel>> call, Response<List<BakingModel>> response) {
+                public void onResponse(Call<List<BakingModel>> call, Response<List<BakingModel>> response) {
 
-                    for (BakingModel model : response.body()) {
-                        Log.d(TAG, "onResponse: " + model.getName());
+                    ArrayList<BakingModel> recipesResponse = new ArrayList<>();
+                    if (response.code() == 200) {
+                        for (BakingModel model : response.body()) {
+                            recipesResponse.add(model);
+                        }
+
+                        mDownloadedRecipes.postValue(recipesResponse);
+                    } else {
+                        Log.d(TAG, "Response error from the API ");
                     }
-
                 }
 
                 @Override

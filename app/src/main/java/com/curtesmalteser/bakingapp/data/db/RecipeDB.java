@@ -15,7 +15,7 @@ import com.curtesmalteser.bakingapp.data.model.Step;
 
 @Database(entities = {BakingModel.class, Ingredient.class, Step.class}, version = 1, exportSchema = false)
 public abstract class RecipeDB extends RoomDatabase{
-    public abstract RecipeDao recipeDao();
+    public abstract RecipeClassDao recipeClassDao();
 
     private static final String DATABASE_NAME = "Recipes.db";
 

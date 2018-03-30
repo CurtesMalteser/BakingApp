@@ -1,8 +1,11 @@
 package com.curtesmalteser.bakingapp.viewmodel;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 
+import com.curtesmalteser.bakingapp.data.Repository;
 import com.curtesmalteser.bakingapp.data.db.FullRecipes;
 
 import java.util.List;
@@ -12,18 +15,25 @@ import java.util.List;
  */
 
 public class RecipeActivityViewModel extends ViewModel {
-    // TODO: 25/03/2018 -->> Implement the ViewModel
+
+    @SuppressLint("StaticFieldLeak")
+    private final Context mContext;
+
     private LiveData<List<FullRecipes>> mRecipes;
 
-    public RecipeActivityViewModel(){
+    private final Repository mRepository;
 
+    public RecipeActivityViewModel(Context context, Repository repository) {
+        this.mContext = context;
+        this.mRepository = repository;
+        mRecipes = mRepository.getAllRecipes();
     }
 
     public LiveData<List<FullRecipes>> getRecipes() {
         return mRecipes;
     }
 
-    public void setRecipes(LiveData<List<FullRecipes>> recipes) {
+   /* public void setRecipes(LiveData<ArrayList<FullRecipes>> recipes) {
         mRecipes = recipes;
-    }
+    }*/
 }

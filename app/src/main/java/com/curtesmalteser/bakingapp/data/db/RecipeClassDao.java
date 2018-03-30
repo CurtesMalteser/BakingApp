@@ -11,7 +11,6 @@ import com.curtesmalteser.bakingapp.data.model.BakingModel;
 import com.curtesmalteser.bakingapp.data.model.Ingredient;
 import com.curtesmalteser.bakingapp.data.model.Step;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,15 +25,15 @@ public abstract class RecipeClassDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract void insertIngredients(ArrayList<Ingredient> insertRecipes);
+    abstract void insertIngredients(List<Ingredient> insertRecipes);
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract void insertSteps(ArrayList<Step> insertRecipes);
+    abstract void insertSteps(List<Step> insertRecipes);
 
     @Transaction
     @Query("SELECT * FROM Recipes")
-    abstract LiveData<List<FullRecipes>> getRecipes();
+    public abstract LiveData<List<FullRecipes>> getRecipes();
 
     @Transaction
     @Query("SELECT * FROM Recipes WHERE id = :id")
@@ -50,10 +49,14 @@ public abstract class RecipeClassDao {
     abstract void deleteSteps();
 
     @Transaction
-    public void updateData(BakingModel recipes, ArrayList<Ingredient> ingredients, ArrayList<Step> steps) {
+    public void deleteData() {
         deleteRecipes();
         deleteIngredients();
         deleteSteps();
+    }
+
+    @Transaction
+    public void updateData(BakingModel recipes, List<Ingredient> ingredients, List<Step> steps) {
         insertRecipes(recipes);
         insertIngredients(ingredients);
         insertSteps(steps);

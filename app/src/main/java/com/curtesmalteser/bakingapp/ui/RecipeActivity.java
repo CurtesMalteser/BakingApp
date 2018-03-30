@@ -11,20 +11,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.curtesmalteser.bakingapp.R;
+import com.curtesmalteser.bakingapp.data.InjectorUtils;
+import com.curtesmalteser.bakingapp.data.db.FullRecipes;
 import com.curtesmalteser.bakingapp.data.model.BakingModel;
-import com.curtesmalteser.bakingapp.data.network.BakingAPIClient;
-import com.curtesmalteser.bakingapp.data.network.BakingAPIInterface;
-import com.curtesmalteser.bakingapp.data.network.RecipesNetworkDataSource;
 import com.curtesmalteser.bakingapp.viewmodel.RecipeActivityViewModel;
+import com.curtesmalteser.bakingapp.viewmodel.RecipesActivityViewModelFactory;
+import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RecipeActivity extends AppCompatActivity
         implements RecipesAdapter.ListItemClickListener {
@@ -34,7 +31,7 @@ public class RecipeActivity extends AppCompatActivity
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
-    private ArrayList<BakingModel> mResultList = new ArrayList<>();
+    private ArrayList<FullRecipes> mResultList = new ArrayList<>();
 
     private RecipesAdapter mRecipesAdapter;
 
@@ -43,7 +40,10 @@ public class RecipeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
-        RecipeActivityViewModel mViewModel = ViewModelProviders.of(this).get(RecipeActivityViewModel.class);
+        Stetho.initializeWithDefaults(this);
+
+        RecipesActivityViewModelFactory factory = InjectorUtils.provideRecipesViewModelFactory(this);
+        RecipeActivityViewModel viewModel = ViewModelProviders.of(this, factory).get(RecipeActivityViewModel.class);
 
         ButterKnife.bind(this);
 
@@ -60,34 +60,26 @@ public class RecipeActivity extends AppCompatActivity
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
 
-        mViewModel.getRecipes();
-
-        /*BakingAPIInterface apiInterface = BakingAPIClient.getClient().create(BakingAPIInterface.class);
-        Call<List<BakingModel>> call;
-
-        call = apiInterface.getRecipes();
-
-        call.enqueue(new Callback<List<BakingModel>>() {
-            @Override
-            public void onResponse
-                    (Call<List<BakingModel>> call, Response<List<BakingModel>> response) {
-
-                for (BakingModel model : response.body()) {
-                    mResultList.add(model);
+        viewModel.getRecipes().observe(RecipeActivity.this, fullRecipes -> {
+            if (fullRecipes != null && fullRecipes.size() != 0) {
+                // TODO: 30/03/2018 -->> Check the API lifecycle on config changes 
+                mResultList.clear();
+                for (FullRecipes recipes : fullRecipes) {
+                    mResultList.add(recipes);
                     mRecipesAdapter.notifyDataSetChanged();
                 }
-
             }
-
-            @Override
-            public void onFailure(Call<List<BakingModel>> call, Throwable t) {
-                Log.e(TAG, t.toString());
-            }
-        });*/
+        });
     }
 
+    private void getData() {
+
+    }
+
+
+
     @Override
-    public void onListItemClick(BakingModel bakingModel) {
+    public void onListItemClick(FullRecipes bakingModel) {
         Intent i = new Intent(this, DetailActivity.class);
         startActivity(i);
     }
