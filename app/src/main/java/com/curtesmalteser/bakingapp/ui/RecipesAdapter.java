@@ -76,6 +76,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
         @BindView(R.id.recipeName)
         TextView recipeName;
 
+        @BindView(R.id.tvServings)
+        TextView tvServings;
+
         public RecipesViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -127,7 +130,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
                 cakeImage.setImageResource(R.drawable.ic_pastry_cake);
             }
 
+            // TODO: 31/03/2018 check this
             recipeName.setText(String.valueOf(model.bakingModel.getName()));
+            tvServings.setText(String.valueOf(model.bakingModel.getServings()));
         }
     }
 }

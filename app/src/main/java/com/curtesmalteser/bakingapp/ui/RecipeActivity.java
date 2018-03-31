@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.curtesmalteser.bakingapp.R;
@@ -31,6 +32,9 @@ public class RecipeActivity extends AppCompatActivity
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     private ArrayList<FullRecipes> mResultList = new ArrayList<>();
 
     private RecipesAdapter mRecipesAdapter;
@@ -44,6 +48,7 @@ public class RecipeActivity extends AppCompatActivity
 
         RecipesActivityViewModelFactory factory = InjectorUtils.provideRecipesViewModelFactory(this);
         RecipeActivityViewModel viewModel = ViewModelProviders.of(this, factory).get(RecipeActivityViewModel.class);
+        setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
 
@@ -71,13 +76,7 @@ public class RecipeActivity extends AppCompatActivity
             }
         });
     }
-
-    private void getData() {
-
-    }
-
-
-
+    
     @Override
     public void onListItemClick(FullRecipes bakingModel) {
         Intent i = new Intent(this, DetailActivity.class);

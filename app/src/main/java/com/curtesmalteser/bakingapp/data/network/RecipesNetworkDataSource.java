@@ -64,6 +64,7 @@ public class RecipesNetworkDataSource {
 
                     ArrayList<BakingModel> recipesResponse = new ArrayList<>();
                     if (response.code() == 200) {
+                        Log.d(TAG, "Response from the API ");
                         for (BakingModel model : response.body()) {
                             recipesResponse.add(model);
                         }
