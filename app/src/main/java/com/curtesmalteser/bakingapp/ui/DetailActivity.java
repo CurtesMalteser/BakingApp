@@ -1,15 +1,19 @@
 package com.curtesmalteser.bakingapp.ui;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.InjectorUtils;
+import com.curtesmalteser.bakingapp.data.model.Step;
 import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModel;
 import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
 
@@ -50,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
 
         DetailsFragment detailsFragment = new DetailsFragment();
         IngredientsFragment ingredientsFragment = new IngredientsFragment();
+        StepsFragment stepsFragment = new StepsFragment();
         boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
 
         if (isTablet) {
@@ -64,5 +69,17 @@ public class DetailActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.detailsContainer, detailsFragment)
                 .commit();
+
+        viewModel.getScreen().observe(this, step ->
+        {
+            if (!stepsFragment.isVisible()) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
+                        .commit();
+            }
+        });
+
+        // TODO: 01/04/2018 -->> Add click on Ingredients textview so when fragment isn't visible
+        // we can navigate back to it
     }
 }

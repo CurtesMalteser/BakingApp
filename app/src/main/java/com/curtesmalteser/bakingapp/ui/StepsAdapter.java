@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
 
-    private Context mContext;
     private ArrayList<Step> mStepsArrayList;
     private ListItemClickListener mOnClickListener;
 
@@ -30,8 +29,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         void onListItemClick(Step step);
     }
 
-    public StepsAdapter(Context mContext, ArrayList<Step> stepsArrayList, ListItemClickListener listItemClickListener) {
-        this.mContext = mContext;
+    StepsAdapter(ArrayList<Step> stepsArrayList, ListItemClickListener listItemClickListener) {
         this.mStepsArrayList = stepsArrayList;
         this.mOnClickListener = listItemClickListener;
     }

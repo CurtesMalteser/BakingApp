@@ -2,13 +2,14 @@ package com.curtesmalteser.bakingapp.viewmodel;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
+import android.util.Log;
 
 import com.curtesmalteser.bakingapp.data.Repository;
 import com.curtesmalteser.bakingapp.data.db.FullRecipes;
-
-import java.util.List;
+import com.curtesmalteser.bakingapp.data.model.Step;
 
 /**
  * Created by António "Curtes Malteser" Bastião on 31/03/2018.
@@ -20,6 +21,7 @@ public class DetailsActivityViewModel extends ViewModel {
     private final Context mContext;
 
     private LiveData<FullRecipes> mRecipes;
+    private MutableLiveData<Step> mStep = new MutableLiveData<>();
 
     private final Repository mRepository;
 
@@ -35,5 +37,13 @@ public class DetailsActivityViewModel extends ViewModel {
 
     public LiveData<FullRecipes> getRecipeById() {
         return mRecipes;
+    }
+
+    public void setScreen(Step position) {
+        mStep.setValue(position);
+    }
+
+    public LiveData<Step> getScreen(){
+        return mStep;
     }
 }

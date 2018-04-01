@@ -87,8 +87,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
 
         @Override
         public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            FullRecipes bakingModel = mRecipesArrayList.get(clickedPosition);
+            FullRecipes bakingModel = mRecipesArrayList.get(getAdapterPosition());
             mOnClickListener.onListItemClick(bakingModel);
         }
 
@@ -128,8 +127,6 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
             } else {
                 cakeImage.setImageResource(R.drawable.ic_pastry_cake);
             }
-
-            // TODO: 31/03/2018 check this
             recipeName.setText(String.valueOf(model.bakingModel.getName()));
             tvServings.setText(String.valueOf(model.bakingModel.getServings()));
         }

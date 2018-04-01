@@ -1,5 +1,7 @@
 package com.curtesmalteser.bakingapp.ui;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
@@ -42,6 +44,7 @@ public class DetailsFragment extends Fragment
 
     private ArrayList<Step> mStepsList = new ArrayList<>();
     private StepsAdapter mStepsAdapter;
+    private DetailsActivityViewModel mViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,20 +55,20 @@ public class DetailsFragment extends Fragment
         ButterKnife.bind(this, v);
 
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
-        DetailsActivityViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        mStepsAdapter = new StepsAdapter(getContext(), mStepsList, this);
+        mStepsAdapter = new StepsAdapter(mStepsList, this);
         mStepsRecyclerView.setAdapter(mStepsAdapter);
         mStepsRecyclerView.setHasFixedSize(true);
-        mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));
+        mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-        viewModel.getRecipeById().observe(DetailsFragment.this, fullRecipes ->
+        mViewModel.getRecipeById().observe(DetailsFragment.this, fullRecipes ->
                 {
                     if (fullRecipes != null)
                         for (Step step : fullRecipes.stepList) {
                             mStepsList.add(step);
                             mStepsAdapter.notifyDataSetChanged();
-                    }
+                        }
                 }
         );
 
@@ -74,6 +77,7 @@ public class DetailsFragment extends Fragment
 
     @Override
     public void onListItemClick(Step step) {
-
+        Log.d("AJDB", "Step: " + step.getStepNumber() + " " + step.getDescription());
+        mViewModel.setScreen(step);
     }
 }
