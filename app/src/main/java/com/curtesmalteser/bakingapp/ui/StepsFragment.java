@@ -12,39 +12,32 @@ import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.InjectorUtils;
-import com.curtesmalteser.bakingapp.data.model.Ingredient;
 import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModel;
 import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
 
 import butterknife.ButterKnife;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class IngredientsFragment extends Fragment {
+public class StepsFragment extends Fragment {
 
 
-    public IngredientsFragment() {
+    public StepsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.ui_ingredients, container, false);
+        View v = inflater.inflate(R.layout.ui_step, container, false);
 
         ButterKnife.bind(this, v);
 
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         DetailsActivityViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        viewModel.getRecipeById().observe(IngredientsFragment.this, fullRecipes ->
+        viewModel.getRecipeById().observe(StepsFragment.this, fullRecipes ->
                 {
-                    if (fullRecipes != null)
-                        for(Ingredient ingredient : fullRecipes.ingredientList)
-                            Log.d("AJDB", "Ingredient: " + ingredient.getIngredient() +
-                            " Meadure: " + ingredient.getMeasure());
+                    if (fullRecipes != null) Log.d("AJDB", "Recipe:" + fullRecipes.bakingModel.getName() +
+                            " Nr. of ingredients:" + fullRecipes.ingredientList.size());
                 }
         );
 

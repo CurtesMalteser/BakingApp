@@ -81,4 +81,8 @@ public class Repository {
     private void startFetchRecipes() {
         mRecipesNetworkDataSource.fetchRecipes();
     }
+
+    public LiveData<FullRecipes> getRecipeById(int id) {
+        return mDao.getRecipeById(id);
+    }
 }

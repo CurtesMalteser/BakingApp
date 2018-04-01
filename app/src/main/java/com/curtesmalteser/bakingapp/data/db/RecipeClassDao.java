@@ -37,7 +37,7 @@ public abstract class RecipeClassDao {
 
     @Transaction
     @Query("SELECT * FROM Recipes WHERE id = :id")
-    abstract LiveData<FullRecipes> getRecipeById(int id);
+    public abstract LiveData<FullRecipes> getRecipeById(int id);
 
     @Query("DELETE FROM Recipes")
     abstract void deleteRecipes();

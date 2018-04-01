@@ -5,6 +5,7 @@ import android.content.Context;
 import com.curtesmalteser.bakingapp.AppExecutors;
 import com.curtesmalteser.bakingapp.data.db.RecipeDB;
 import com.curtesmalteser.bakingapp.data.network.RecipesNetworkDataSource;
+import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
 import com.curtesmalteser.bakingapp.viewmodel.RecipesActivityViewModelFactory;
 
 /**
@@ -24,4 +25,11 @@ public class InjectorUtils {
         Repository repository = provideRepository(context.getApplicationContext());
         return new RecipesActivityViewModelFactory(context.getApplicationContext(), repository);
     }
+
+    public static DetailsActivityViewModelFactory provideDetailsActivityViewModelFactory(Context context){
+        Repository repository = provideRepository(context.getApplicationContext());
+        return new DetailsActivityViewModelFactory(context.getApplicationContext(), repository);
+    }
+
+
 }

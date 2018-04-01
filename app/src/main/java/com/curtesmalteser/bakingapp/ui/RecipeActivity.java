@@ -67,7 +67,6 @@ public class RecipeActivity extends AppCompatActivity
 
         viewModel.getRecipes().observe(RecipeActivity.this, fullRecipes -> {
             if (fullRecipes != null && fullRecipes.size() != 0) {
-                // TODO: 30/03/2018 -->> Check the API lifecycle on config changes 
                 mResultList.clear();
                 for (FullRecipes recipes : fullRecipes) {
                     mResultList.add(recipes);
@@ -78,8 +77,9 @@ public class RecipeActivity extends AppCompatActivity
     }
     
     @Override
-    public void onListItemClick(FullRecipes bakingModel) {
+    public void onListItemClick(FullRecipes fullRecipesModel) {
         Intent i = new Intent(this, DetailActivity.class);
+        i.putExtra(getString(R.string.recipe_id), fullRecipesModel.bakingModel.getId());
         startActivity(i);
     }
 }

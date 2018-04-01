@@ -8,15 +8,15 @@ import android.support.annotation.NonNull;
 import com.curtesmalteser.bakingapp.data.Repository;
 
 /**
- * Created by António "Curtes Malteser" Bastião on 30/03/2018.
+ * Created by António "Curtes Malteser" Bastião on 31/03/2018.
  */
 
-public class RecipesActivityViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class DetailsActivityViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final Context mContext;
     private final Repository mRepository;
 
-    public RecipesActivityViewModelFactory(Context mContext, Repository mRepository) {
+    public DetailsActivityViewModelFactory(Context mContext, Repository mRepository) {
         this.mContext = mContext;
         this.mRepository = mRepository;
     }
@@ -25,6 +25,6 @@ public class RecipesActivityViewModelFactory extends ViewModelProvider.NewInstan
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new RecipeActivityViewModel(mContext, mRepository);
+        return (T) new DetailsActivityViewModel(mContext, mRepository);
     }
 }

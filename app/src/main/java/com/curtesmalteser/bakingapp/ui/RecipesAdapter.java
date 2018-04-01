@@ -30,7 +30,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
 
     private Context mContext;
     private ArrayList<FullRecipes> mRecipesArrayList;
-    final private ListItemClickListener mOnClickListener;
+    private final ListItemClickListener mOnClickListener;
 
     public interface ListItemClickListener {
         void onListItemClick(FullRecipes bakingModel);
@@ -50,9 +50,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.single_recipe_phone;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, parent, false);
 
         return new RecipesViewHolder(view);
     }
