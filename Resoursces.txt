@@ -4,3 +4,5 @@ http://www.jsonschema2pojo.org/
 Cake PalceHolder
 http://simpleicon.com/pestry_cake.html
 
+ExoPlayer custom controls
+https://github.com/yusufcakmak/ExoPlayerSample

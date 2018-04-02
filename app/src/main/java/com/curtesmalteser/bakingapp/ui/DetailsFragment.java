@@ -77,7 +77,6 @@ public class DetailsFragment extends Fragment
 
     @Override
     public void onListItemClick(Step step) {
-        Log.d("AJDB", "Step: " + step.getStepNumber() + " " + step.getDescription());
         mViewModel.setScreen(step);
     }
 }

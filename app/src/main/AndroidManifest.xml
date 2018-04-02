@@ -20,8 +20,21 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.DetailActivity" />
-        <activity android:name=".ui.StepActivity" />
-        <activity android:name=".ui.IngredientsActivity"></activity>
+
+        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".widget.BakindAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/bakind_app_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_recipes"
+            android:icon="@drawable/ic_restaurant_menu_black_24dp"
+            android:title="@string/recipes" />
+        <item
+            android:id="@+id/nav_details"
+            android:icon="@drawable/ic_cake_black_24dp"
+            android:title="@string/details" />
+        <item
+        android:id="@+id/nav_ingredients"
+        android:icon="@drawable/ic_format_list_bulleted_black_24dp"
+        android:title="@string/ingredients" />
 
+        <item
+            android:id="@+id/nav_steps"
+            android:icon="@drawable/ic_format_list_numbered_black_24dp"
+            android:title="@string/steps" />
     </group>
 </menu>

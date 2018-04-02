@@ -33,6 +33,7 @@ ext {
     picassoVersion = '2.5.2'
     butterknifeVersion = '8.8.1'
     stethoVersion = '1.5.0'
+    exoPlayerVersion='2.7.2'
 }
 
 dependencies {
@@ -56,6 +57,7 @@ dependencies {
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     implementation "com.facebook.stetho:stetho:$stethoVersion"
+    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

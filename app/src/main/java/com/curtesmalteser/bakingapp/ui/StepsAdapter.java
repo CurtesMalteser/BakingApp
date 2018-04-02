@@ -77,7 +77,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         }
 
         public void bind(int position) {
-
             final Step step = mStepsArrayList.get(position);
             tvStep.setText(step.getShortDescription());
         }

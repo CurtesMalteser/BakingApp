@@ -2,9 +2,11 @@
     <string name="app_name">Baking App</string>
     <string name="servings">Servings:</string>
     <string name="ingredients">Ingredients</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="recipe_id">recipeId</string>
     <string name="quantity_abbreviation">Qty.</string>
+    <string name="recipes">All Recipes</string>
+    <string name="details">Details</string>
+    <string name="steps">Steps</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

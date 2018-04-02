@@ -61,7 +61,6 @@ public class RecipesNetworkDataSource {
             call.enqueue(new Callback<List<BakingModel>>() {
                 @Override
                 public void onResponse(Call<List<BakingModel>> call, Response<List<BakingModel>> response) {
-
                     ArrayList<BakingModel> recipesResponse = new ArrayList<>();
                     if (response.code() == 200) {
                         Log.d(TAG, "Response from the API ");
