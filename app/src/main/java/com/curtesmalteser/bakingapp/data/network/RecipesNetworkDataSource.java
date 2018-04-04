@@ -27,21 +27,19 @@ public class RecipesNetworkDataSource {
     private static final Object LOCK = new Object();
     @SuppressLint("StaticFieldLeak")
     private static RecipesNetworkDataSource sInstance;
-    private final Context mContext;
 
     private final MutableLiveData<List<BakingModel>> mDownloadedRecipes;
     private final AppExecutors mExecutors;
 
-    public RecipesNetworkDataSource(Context mContext, AppExecutors mExecutors) {
-        this.mContext = mContext;
+    public RecipesNetworkDataSource(AppExecutors mExecutors) {
         this.mExecutors = mExecutors;
         mDownloadedRecipes = new MutableLiveData<>();
     }
 
-    public static RecipesNetworkDataSource getsInstance(Context context, AppExecutors executors) {
+    public static RecipesNetworkDataSource getsInstance(AppExecutors executors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new RecipesNetworkDataSource(context.getApplicationContext(), executors);
+                sInstance = new RecipesNetworkDataSource(executors);
             }
         }
         return sInstance;

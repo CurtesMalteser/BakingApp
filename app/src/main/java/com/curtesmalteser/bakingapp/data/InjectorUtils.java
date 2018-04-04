@@ -17,19 +17,17 @@ public class InjectorUtils {
         RecipeDB db = RecipeDB.getInstance(context.getApplicationContext());
         AppExecutors executors = AppExecutors.getInstance();
         RecipesNetworkDataSource networkDataSource =
-                RecipesNetworkDataSource.getsInstance(context.getApplicationContext(), executors);
-        return Repository.getInstance(db.recipeClassDao(), networkDataSource, executors);
+                RecipesNetworkDataSource.getsInstance(executors);
+        return Repository.getInstance(context.getApplicationContext(), db.recipeClassDao(), networkDataSource, executors);
     }
 
     public static RecipesActivityViewModelFactory provideRecipesViewModelFactory(Context context){
         Repository repository = provideRepository(context.getApplicationContext());
-        return new RecipesActivityViewModelFactory(context.getApplicationContext(), repository);
+        return new RecipesActivityViewModelFactory(repository);
     }
 
     public static DetailsActivityViewModelFactory provideDetailsActivityViewModelFactory(Context context){
         Repository repository = provideRepository(context.getApplicationContext());
-        return new DetailsActivityViewModelFactory(context.getApplicationContext(), repository);
+        return new DetailsActivityViewModelFactory(repository);
     }
-
-
 }

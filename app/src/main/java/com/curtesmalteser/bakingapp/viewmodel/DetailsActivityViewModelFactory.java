@@ -13,11 +13,9 @@ import com.curtesmalteser.bakingapp.data.Repository;
 
 public class DetailsActivityViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private final Context mContext;
     private final Repository mRepository;
 
-    public DetailsActivityViewModelFactory(Context mContext, Repository mRepository) {
-        this.mContext = mContext;
+    public DetailsActivityViewModelFactory(Repository mRepository) {
         this.mRepository = mRepository;
     }
 
@@ -25,6 +23,6 @@ public class DetailsActivityViewModelFactory extends ViewModelProvider.NewInstan
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new DetailsActivityViewModel(mContext, mRepository);
+        return (T) new DetailsActivityViewModel(mRepository);
     }
 }

@@ -6,3 +6,8 @@ http://simpleicon.com/pestry_cake.html
 
 ExoPlayer custom controls
 https://github.com/yusufcakmak/ExoPlayerSample
+
+Widget ActivityConfigure
+
+- https://developer.android.com/guide/topics/appwidgets/index.html#preview
+- https://github.com/appium/android-apidemos/tree/master/src/io/appium/android/apis/appwidget

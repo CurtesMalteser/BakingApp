@@ -1,6 +1,7 @@
 package com.curtesmalteser.bakingapp.data;
 
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.util.Log;
 
 import com.curtesmalteser.bakingapp.AppExecutors;
@@ -25,10 +26,12 @@ public class Repository {
     private final RecipeClassDao mDao;
     private final RecipesNetworkDataSource mRecipesNetworkDataSource;
     private final AppExecutors mExecutors;
+    private final Context mContext;
 
-    public Repository(RecipeClassDao mDao,
+    public Repository(Context context, RecipeClassDao mDao,
                       RecipesNetworkDataSource mRecipesNetworkDataSource,
                       AppExecutors mExecutors) {
+         this.mContext = context;
         this.mDao = mDao;
         this.mRecipesNetworkDataSource = mRecipesNetworkDataSource;
         this.mExecutors = mExecutors;
@@ -56,12 +59,12 @@ public class Repository {
         );
     }
 
-    synchronized static Repository getInstance(RecipeClassDao recipeClassDao,
+    synchronized static Repository getInstance(Context context, RecipeClassDao recipeClassDao,
                                                RecipesNetworkDataSource recipesNetworkDataSource,
                                                AppExecutors executors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new Repository(recipeClassDao,
+                sInstance = new Repository(context, recipeClassDao,
                         recipesNetworkDataSource,
                         executors);
             }

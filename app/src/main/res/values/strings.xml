@@ -7,6 +7,4 @@
     <string name="recipes">All Recipes</string>
     <string name="details">Details</string>
     <string name="steps">Steps</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
 </resources>

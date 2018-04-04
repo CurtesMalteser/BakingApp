@@ -4,7 +4,8 @@
     android:initialLayout="@layout/bakind_app_widget"
     android:minHeight="40dp"
     android:minWidth="40dp"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:previewImage="@drawable/ic_launcher_foreground"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
-    android:widgetCategory="home_screen"></appwidget-provider>
+    android:widgetCategory="home_screen"
+    android:configure="com.curtesmalteser.bakingapp.ui.RecipeActivity"/>

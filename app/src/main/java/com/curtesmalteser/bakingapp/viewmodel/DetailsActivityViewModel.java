@@ -17,16 +17,12 @@ import com.curtesmalteser.bakingapp.data.model.Step;
 
 public class DetailsActivityViewModel extends ViewModel {
 
-    @SuppressLint("StaticFieldLeak")
-    private final Context mContext;
-
     private LiveData<FullRecipes> mRecipes;
     private MutableLiveData<Step> mStep = new MutableLiveData<>();
 
     private final Repository mRepository;
 
-    public DetailsActivityViewModel(Context context, Repository repository) {
-        this.mContext = context;
+    public DetailsActivityViewModel(Repository repository) {
         this.mRepository = repository;
 
     }

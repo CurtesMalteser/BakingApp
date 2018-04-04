@@ -1,24 +1,36 @@
 package com.curtesmalteser.bakingapp.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.curtesmalteser.bakingapp.R;
+import com.curtesmalteser.bakingapp.ui.DetailActivity;
+import com.curtesmalteser.bakingapp.ui.RecipeActivity;
 
 /**
  * Implementation of App Widget functionality.
  */
-public class BakindAppWidget extends AppWidgetProvider {
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+public class BakingAppWidget extends AppWidgetProvider {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
+    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                int appWidgetId, String recipeName) {
+
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.bakind_app_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+
+        Intent i = new Intent(context, RecipeActivity.class);
+        i.putExtra(appWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        views.setOnClickPendingIntent(R.id.testWidget, pendingIntent);
+
+        views.setTextViewText(R.id.recipeNameWidget, recipeName);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -28,7 +40,17 @@ public class BakindAppWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            String titlePrefix = RecipeActivity.loadTitlePref(context, appWidgetId);
+            updateAppWidget(context, appWidgetManager, appWidgetId, titlePrefix);
+
+        }
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        // When the user deletes the widget, delete the preference associated with it.
+        for (int appWidgetId : appWidgetIds) {
+            RecipeActivity.deleteTitlePref(context, appWidgetId);
         }
     }
 

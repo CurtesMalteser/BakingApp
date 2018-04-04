@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
@@ -64,7 +65,6 @@ public class DetailActivity extends AppCompatActivity {
         if (getIntent().hasExtra(getResources().getString(R.string.recipe_id))) {
 
             viewModel.setRecipes(getIntent().getIntExtra(getResources().getString(R.string.recipe_id), 1));
-
             viewModel.getRecipeById().observe(DetailActivity.this, fullRecipes ->
                     {
                         if (fullRecipes != null) {

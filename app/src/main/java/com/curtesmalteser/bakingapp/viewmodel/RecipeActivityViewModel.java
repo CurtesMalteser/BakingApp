@@ -16,15 +16,11 @@ import java.util.List;
 
 public class RecipeActivityViewModel extends ViewModel {
 
-    @SuppressLint("StaticFieldLeak")
-    private final Context mContext;
-
     private LiveData<List<FullRecipes>> mRecipes;
 
     private final Repository mRepository;
 
-    public RecipeActivityViewModel(Context context, Repository repository) {
-        this.mContext = context;
+    public RecipeActivityViewModel(Repository repository) {
         this.mRepository = repository;
         mRecipes = mRepository.getAllRecipes();
     }
