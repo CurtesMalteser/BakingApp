@@ -97,7 +97,6 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public void onListItemClick(FullRecipes fullRecipesModel) {
         if (mAppWidgetId != 0) {
-            Log.d("AJDB", "lol: " + mAppWidgetId);
             // When the button is clicked, save the string in our prefs and return that they
             // clicked OK.
             saveTitlePref(this, mAppWidgetId, fullRecipesModel.bakingModel.getName());
@@ -105,13 +104,17 @@ public class RecipeActivity extends AppCompatActivity
             // Push widget update to surface with newly set prefix
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
             BakingAppWidget.updateAppWidget(this, appWidgetManager,
-                    mAppWidgetId, fullRecipesModel.bakingModel.getName());
+                    mAppWidgetId, fullRecipesModel);
 
             // Make sure we pass back the original appWidgetId
             Intent resultValue = new Intent();
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
             setResult(RESULT_OK, resultValue);
+
+
+
             finish();
+
         } else {
             Intent i = new Intent(this, DetailActivity.class);
             i.putExtra(getString(R.string.recipe_id), fullRecipesModel.bakingModel.getId());
@@ -127,7 +130,7 @@ public class RecipeActivity extends AppCompatActivity
         } else {
             // TODO: 04/04/2018 -->> Fix this preferences
             //return context.getString(R.string.appwidget_prefix_default);
-            return "lol";
+            return "appwidget_prefix_default";
         }
     }
 
