@@ -1,13 +1,57 @@
 Api POJOs
 http://www.jsonschema2pojo.org/
 
+MMVM
+- https://codelabs.developers.google.com/codelabs/build-app-with-arch-components/index.html?index=..%2F..%2Findex#0
+
 Cake PalceHolder
 http://simpleicon.com/pestry_cake.html
 
 ExoPlayer custom controls
-https://github.com/yusufcakmak/ExoPlayerSample
+- https://github.com/google/ExoPlayer/blob/dev-v2-r2.7.3/demos/main/src/main/java/com/google/android/exoplayer2/demo/PlayerActivity.java
+- https://github.com/google/ExoPlayer/blob/dev-v2-r2.7.3/library/ui/src/main/res/layout/exo_playback_control_view.xml
+- https://github.com/yusufcakmak/ExoPlayerSample
+- https://geoffledak.com/blog/2017/09/11/how-to-add-a-fullscreen-toggle-button-to-exoplayer-in-android/
+- https://medium.com/google-exoplayer/customizing-exoplayers-ui-components-728cf55ee07a
 
 Widget ActivityConfigure
-
 - https://developer.android.com/guide/topics/appwidgets/index.html#preview
 - https://github.com/appium/android-apidemos/tree/master/src/io/appium/android/apis/appwidget
+
+Steps implement the ExoPlayer
+
+1 - Add te respective dependency
+ext {
+    exoPlayerVersion='2.7.3'
+}
+
+dependencies {
+implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
+}
+
+2 - Add the the player on layout file and add a custom control view layout fila
+
+a)  <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/playerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:controller_layout_id="@layout/exo_custom_control_view"/>
+
+b)  create the exo_custom_control_view.XML to override the default implementation
+		The default tamplate layout file is at:
+		https://github.com/google/ExoPlayer/blob/dev-v2-r2.7.3/library/ui/src/main/res/layout/exo_playback_control_view.xml
+
+		Is important to implement the layout from the branch that matches the depency version compiled (in this case 2.7.3)
+		and if Butternknife or Databinding is important to replace the default views id or the default view and the implemented code will cause any effect.
+		If the tradinitonal findViewById is used like the way that is shown here:
+
+		https://geoffledak.com/blog/2017/09/11/how-to-add-a-fullscreen-toggle-button-to-exoplayer-in-android/
+	
+		There's not need to add new id's because it's mandatory to make one reference to the custom layout file.
+
+3 - Follow the steps from the lectures and to implement to the videos I followed this Medium article
+	https://medium.com/@yusufcakmak/playing-audio-and-video-with-exoplayer-2-4f4c2c2d9772
+
+
+
+

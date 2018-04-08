@@ -174,8 +174,6 @@ public class StepsFragment extends Fragment
         mExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
         mPlayerView.setPlayer(mExoPlayer);
 
-        mExoPlayer.addListener(this);
-
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
                 Util.getUserAgent(getContext(), getString(R.string.app_name)), bandwidthMeter);
