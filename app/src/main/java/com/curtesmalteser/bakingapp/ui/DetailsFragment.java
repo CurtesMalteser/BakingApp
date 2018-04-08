@@ -1,17 +1,10 @@
 package com.curtesmalteser.bakingapp.ui;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,12 +64,11 @@ public class DetailsFragment extends Fragment
                         }
                 }
         );
-
         return v;
     }
 
     @Override
-    public void onListItemClick(Step step) {
-        mViewModel.setScreen(step);
+    public void onListItemClick(int position) {
+        mViewModel.setStepScreen(position);
     }
 }

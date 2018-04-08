@@ -25,7 +25,7 @@
         android:paddingTop="4dp"
         android:orientation="horizontal">
 
-        <ImageButton android:id="@id/exo_prev"
+        <ImageButton android:id="@+id/my_exo_prev"
             style="@style/ExoMediaButton.Previous"/>
 
         <ImageButton android:id="@id/exo_play"
@@ -34,7 +34,7 @@
         <ImageButton android:id="@id/exo_pause"
             style="@style/ExoMediaButton.Pause"/>
 
-        <ImageButton android:id="@id/exo_next"
+        <ImageButton android:id="@+id/my_exo_next"
             style="@style/ExoMediaButton.Next"/>
 
     </LinearLayout>

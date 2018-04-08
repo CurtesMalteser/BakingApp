@@ -16,10 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.InjectorUtils;
+import com.curtesmalteser.bakingapp.data.model.Step;
 import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModel;
 import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -44,6 +46,9 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -62,10 +67,21 @@ public class StepsFragment extends Fragment
     @BindView(R.id.stepDescription)
     TextView stepDescription;
 
+    @BindView(R.id.my_exo_prev)
+    ImageButton exoPrev;
+
+    @BindView(R.id.my_exo_next)
+    ImageButton exoNext;
+
     private SimpleExoPlayer mExoPlayer;
 
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+
+    private int numberOfSteps;
+    private int currentStep;
+    List<Step> steps = new ArrayList<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,18 +114,53 @@ public class StepsFragment extends Fragment
         mMediaSession.setCallback(new MySessionCallback());
         mMediaSession.setActive(true);
 
+        viewModel.getRecipeById().observe(StepsFragment.this, fullRecipes -> {
+            numberOfSteps = fullRecipes.stepList.size() - 1;
+            steps = fullRecipes.stepList;
+        });
 
-        viewModel.getScreen().observe(StepsFragment.this, step -> {
+        viewModel.getStepScreen().observe(StepsFragment.this, position -> {
             {
-                if (step != null) {
-                    if (step.getVideoURL() != null && !step.getVideoURL().equals("")) {
-                        initializePlayer(step.getVideoURL());
+                if (position != null) {
+                    currentStep = position;
+                    Log.d(TAG, "position: " + position);
+                    if(position == 0) {
+                        exoPrev.setVisibility(View.INVISIBLE);
+                        exoNext.setVisibility(View.VISIBLE);
+                    }
+                    if(position == numberOfSteps) {
+                        exoNext.setVisibility(View.INVISIBLE);
+                        exoPrev.setVisibility(View.VISIBLE);
+                    }
+
+                    if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
+                        initializePlayer(steps.get(position).getVideoURL());
+
                     } else {
 
-                    }
-                    stepDescription.setText(step.getDescription());
+                        }
+                    stepDescription.setText(steps.get(position).getDescription());
                 }
             }
+        });
+
+        // Override the buttons previous / next behaviour
+        exoPrev.setOnClickListener(v1 -> {
+            if (currentStep != 0) {
+                currentStep--;
+                viewModel.setStepScreen(currentStep);
+                if (currentStep == 0) exoPrev.setVisibility(View.INVISIBLE);
+            }
+            if(exoNext.getVisibility() == View.INVISIBLE) exoNext.setVisibility(View.VISIBLE);
+        });
+
+        exoNext.setOnClickListener(v1 -> {
+            if (currentStep < numberOfSteps) {
+                currentStep++;
+                viewModel.setStepScreen(currentStep);
+                if (currentStep == numberOfSteps) exoNext.setVisibility(View.INVISIBLE);
+            }
+            if(exoPrev.getVisibility() == View.INVISIBLE) exoPrev.setVisibility(View.VISIBLE);
         });
 
         return v;
@@ -132,6 +183,23 @@ public class StepsFragment extends Fragment
                 .createMediaSource(Uri.parse(url));
         mExoPlayer.prepare(videoSource);
         mExoPlayer.setPlayWhenReady(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+          //  initializePlayer(mExoPlayer);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //hideSystemUi();
+        if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
+            //initializePlayer();
+        }
     }
 
     @Override
@@ -209,13 +277,15 @@ public class StepsFragment extends Fragment
 
     @Override
     public void onSeekProcessed() {
-
+        Log.d(TAG, "onSeekProcessed: ");
     }
 
     private class MySessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
+            Log.d(TAG, "onPlay: ");
             mExoPlayer.setPlayWhenReady(true);
+
         }
 
         @Override
@@ -225,8 +295,12 @@ public class StepsFragment extends Fragment
 
         @Override
         public void onSkipToPrevious() {
-            Log.d(TAG, "onSkipToPrevious: ");
-            mExoPlayer.seekTo(0);
+            super.onSkipToPrevious();
+        }
+
+        @Override
+        public void onSkipToNext() {
+            super.onSkipToNext();
         }
     }
 

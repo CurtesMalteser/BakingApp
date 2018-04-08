@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -74,6 +75,18 @@ class BakingRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.single_row_widget);
         rv.setTextViewText(R.id.singleRowIngredientTv, ingredients.get(position).getIngredient());
+
+        // Next, set a fill-intent, which will be used to fill in the pending intent template
+        // that is set on the collection view in StackWidgetProvider.
+        Bundle extras = new Bundle();
+        extras.putLong("position", position);
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtras(extras);
+        // Make it possible to distinguish the individual on-click
+        // action of a given item
+        rv.setOnClickFillInIntent(R.id.singleRowIngredientWidget, fillInIntent);
+        Log.d("AJDB", "getViewAt: " + extras.getLong("position"));
+
         return rv;
     }
 

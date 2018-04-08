@@ -18,7 +18,7 @@ import com.curtesmalteser.bakingapp.data.model.Step;
 public class DetailsActivityViewModel extends ViewModel {
 
     private LiveData<FullRecipes> mRecipes;
-    private MutableLiveData<Step> mStep = new MutableLiveData<>();
+    private MutableLiveData<Integer> mStep = new MutableLiveData<>();
 
     private final Repository mRepository;
 
@@ -35,11 +35,11 @@ public class DetailsActivityViewModel extends ViewModel {
         return mRecipes;
     }
 
-    public void setScreen(Step position) {
+    public void setStepScreen(int position) {
         mStep.setValue(position);
     }
 
-    public LiveData<Step> getScreen(){
+    public LiveData<Integer> getStepScreen(){
         return mStep;
     }
 }

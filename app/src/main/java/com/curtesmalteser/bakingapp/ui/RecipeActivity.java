@@ -111,8 +111,6 @@ public class RecipeActivity extends AppCompatActivity
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
             setResult(RESULT_OK, resultValue);
 
-
-
             finish();
 
         } else {
