@@ -3,6 +3,7 @@ package com.curtesmalteser.bakingapp.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +36,7 @@ public class IngredientsFragment extends Fragment
     RecyclerView mIngredientsRecyclerView;
 
     private ArrayList<Ingredient> mIngredientsList = new ArrayList<>();
-    private IngredientsAdapter mIngredientsAdapater;
+    private IngredientsAdapter mIngredientsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,8 +48,8 @@ public class IngredientsFragment extends Fragment
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         DetailsActivityViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        mIngredientsAdapater = new IngredientsAdapter(mIngredientsList, this);
-        mIngredientsRecyclerView.setAdapter(mIngredientsAdapater);
+        mIngredientsAdapter = new IngredientsAdapter(mIngredientsList, this);
+        mIngredientsRecyclerView.setAdapter(mIngredientsAdapter);
         mIngredientsRecyclerView.setHasFixedSize(true);
         mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
@@ -57,7 +58,7 @@ public class IngredientsFragment extends Fragment
                     if (fullRecipes != null)
                         for (Ingredient ingredient : fullRecipes.ingredientList) {
                             mIngredientsList.add(ingredient);
-                            mIngredientsAdapater.notifyDataSetChanged();
+                            mIngredientsAdapter.notifyDataSetChanged();
                         }
                 }
         );

@@ -78,7 +78,6 @@ public class RecipeActivity extends AppCompatActivity
 
         if (isTablet) {
             mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }

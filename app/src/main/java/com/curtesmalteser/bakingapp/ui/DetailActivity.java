@@ -9,7 +9,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.curtesmalteser.bakingapp.R;
@@ -76,12 +78,19 @@ public class DetailActivity extends AppCompatActivity {
         IngredientsFragment ingredientsFragment = new IngredientsFragment();
         StepsFragment stepsFragment = new StepsFragment();
         boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
 
-        fragmentManager.beginTransaction()
-                .add(R.id.detailsContainer, detailsFragment)
-                .commit();
+        if (savedInstanceState == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.detailsContainer, detailsFragment)
+                    .commit();
+        } else if (isTablet && isLandscape) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.detailsContainer, detailsFragment)
+                    .commit();
+        }
 
-        if (isTablet) {
+        if (isTablet && isLandscape) {
             fragmentManager.beginTransaction()
                     .add(R.id.ingredientsAndStepsContainer, ingredientsFragment)
                     .commit();
@@ -89,16 +98,21 @@ public class DetailActivity extends AppCompatActivity {
 
         viewModel.getStepScreen().observe(this, step ->
         {
-            if (isTablet) {
+            if (isTablet && isLandscape) {
                 if (!stepsFragment.isVisible()) {
+                    Log.d("XPTO", "onCreate: tablet");
                     fragmentManager.beginTransaction()
                             .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
                             .commit();
                 }
             } else {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.detailsContainer, stepsFragment)
-                        .commit();
+
+                detailsContainer.setVisibility(View.INVISIBLE);
+               if (!stepsFragment.isVisible())
+                    Log.d("XPTO", "onCreate: not tablet");
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
+                            .commit();
             }
         });
 

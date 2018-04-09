@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
@@ -45,6 +48,9 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +79,9 @@ public class StepsFragment extends Fragment
     @BindView(R.id.my_exo_next)
     ImageButton exoNext;
 
+    @BindView(R.id.placeHolderOnMovieError)
+    ImageView placeHolderOnMovieError;
+
     private SimpleExoPlayer mExoPlayer;
 
     private static MediaSessionCompat mMediaSession;
@@ -82,16 +91,18 @@ public class StepsFragment extends Fragment
     private int currentStep;
     List<Step> steps = new ArrayList<>();
 
+    private DetailsActivityViewModel mViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.ui_step, container, false);
+        releasePlayer();
 
         ButterKnife.bind(this, v);
 
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
-        DetailsActivityViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
         mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getContext().getResources(),
                 R.drawable.ic_pastry_cake));
@@ -114,96 +125,132 @@ public class StepsFragment extends Fragment
         mMediaSession.setCallback(new MySessionCallback());
         mMediaSession.setActive(true);
 
-        viewModel.getRecipeById().observe(StepsFragment.this, fullRecipes -> {
+        mViewModel.getRecipeById().observe(StepsFragment.this, fullRecipes -> {
             numberOfSteps = fullRecipes.stepList.size() - 1;
             steps = fullRecipes.stepList;
-        });
 
-        viewModel.getStepScreen().observe(StepsFragment.this, position -> {
-            {
-                if (position != null) {
-                    currentStep = position;
-                    Log.d(TAG, "position: " + position);
-                    if(position == 0) {
-                        exoPrev.setVisibility(View.INVISIBLE);
-                        exoNext.setVisibility(View.VISIBLE);
-                    }
-                    if(position == numberOfSteps) {
-                        exoNext.setVisibility(View.INVISIBLE);
-                        exoPrev.setVisibility(View.VISIBLE);
-                    }
+            mViewModel.getStepScreen().observe(StepsFragment.this, position -> {
+                {
+                    if (position != null) {
+                        currentStep = position;
+                        if (position == 0) {
+                            exoPrev.setVisibility(View.INVISIBLE);
+                            exoNext.setVisibility(View.VISIBLE);
+                        }
+                        if (position == numberOfSteps) {
+                            exoNext.setVisibility(View.INVISIBLE);
+                            exoPrev.setVisibility(View.VISIBLE);
+                        }
 
-                    if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
-                        initializePlayer(steps.get(position).getVideoURL());
+                        if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
+                            mPlayerView.setVisibility(View.VISIBLE);
+                            placeHolderOnMovieError.setVisibility(View.INVISIBLE);
+                            initializePlayer(steps.get(position).getVideoURL());
+                        } else {
+                            releasePlayer();
 
-                    } else {
+                            placeHolderOnMovieError.setVisibility(View.VISIBLE);
+                            mPlayerView.setVisibility(View.INVISIBLE);
+                            if (steps.get(position).getThumbnailURL() != null && !steps.get(position).getThumbnailURL().equals("")) {
+                                Picasso.with(getContext())
+                                        .load(steps.get(position).getThumbnailURL())
+                                        .networkPolicy(NetworkPolicy.OFFLINE)
+                                        .into(placeHolderOnMovieError, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+
+                                            }
+
+                                            @Override
+                                            public void onError() {
+                                                //Try again online if cache failed
+                                                Picasso.with(getContext())
+                                                        .load(steps.get(position).getThumbnailURL())
+                                                        .error(R.drawable.ic_pastry_cake)
+                                                        .into(placeHolderOnMovieError, new Callback() {
+                                                            @Override
+                                                            public void onSuccess() {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onError() {
+                                                                Log.v("Picasso", "Could not fetch image");
+                                                            }
+                                                        });
+                                            }
+                                        });
+
+                            } else {
+                                placeHolderOnMovieError.setImageResource(R.drawable.ic_pastry_cake);
+                            }
 
                         }
-                    stepDescription.setText(steps.get(position).getDescription());
+                        stepDescription.setText(steps.get(position).getDescription());
+                    }
                 }
-            }
+            });
+
         });
 
-        // Override the buttons previous / next behaviour
-        exoPrev.setOnClickListener(v1 -> {
-            if (currentStep != 0) {
-                currentStep--;
-                viewModel.setStepScreen(currentStep);
-                if (currentStep == 0) exoPrev.setVisibility(View.INVISIBLE);
-            }
-            if(exoNext.getVisibility() == View.INVISIBLE) exoNext.setVisibility(View.VISIBLE);
-        });
+        exoPrev.setOnClickListener(v1 -> skipToPrevious());
 
-        exoNext.setOnClickListener(v1 -> {
-            if (currentStep < numberOfSteps) {
-                currentStep++;
-                viewModel.setStepScreen(currentStep);
-                if (currentStep == numberOfSteps) exoNext.setVisibility(View.INVISIBLE);
-            }
-            if(exoPrev.getVisibility() == View.INVISIBLE) exoPrev.setVisibility(View.VISIBLE);
-        });
+        exoNext.setOnClickListener(v1 -> skipToNext());
 
         return v;
     }
 
+    private void skipToPrevious() {
+        if (currentStep != 0) {
+            currentStep--;
+            mViewModel.setStepScreen(currentStep);
+            if (currentStep == 0) exoPrev.setVisibility(View.INVISIBLE);
+        }
+        if (exoNext.getVisibility() == View.INVISIBLE) exoNext.setVisibility(View.VISIBLE);
+    }
+
+    private void skipToNext() {
+        if (currentStep < numberOfSteps) {
+            currentStep++;
+            mViewModel.setStepScreen(currentStep);
+            if (currentStep == numberOfSteps) exoNext.setVisibility(View.INVISIBLE);
+        }
+        if (exoPrev.getVisibility() == View.INVISIBLE) exoPrev.setVisibility(View.VISIBLE);
+    }
+
     private void initializePlayer(String url) {
         if (mExoPlayer != null) mExoPlayer.release();
-        RenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
-        TrackSelector trackSelector = new DefaultTrackSelector();
-        LoadControl loadControl = new DefaultLoadControl();
-        mExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
-        mPlayerView.setPlayer(mExoPlayer);
+            RenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
+            TrackSelector trackSelector = new DefaultTrackSelector();
+            LoadControl loadControl = new DefaultLoadControl();
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
+            mPlayerView.setPlayer(mExoPlayer);
 
-        DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
-                Util.getUserAgent(getContext(), getString(R.string.app_name)), bandwidthMeter);
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.parse(url));
-        mExoPlayer.prepare(videoSource);
-        mExoPlayer.setPlayWhenReady(true);
-    }
+            mExoPlayer.addListener(this);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (Util.SDK_INT > 23) {
-          //  initializePlayer(mExoPlayer);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //hideSystemUi();
-        if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
-            //initializePlayer();
-        }
+            DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
+                    Util.getUserAgent(getContext(), getString(R.string.app_name)), bandwidthMeter);
+            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(Uri.parse(url));
+            mExoPlayer.prepare(videoSource);
+            mViewModel.getVideoPosition().observe(StepsFragment.this, position -> {
+                if (position != null && mExoPlayer != null) mExoPlayer.seekTo(position);
+            });
+            mExoPlayer.setPlayWhenReady(true);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        // mMediaSession.setActive(false);
+        mMediaSession.setActive(false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+        mMediaSession.release();
     }
 
     private void releasePlayer() {
@@ -212,13 +259,6 @@ public class StepsFragment extends Fragment
             mExoPlayer.release();
             mExoPlayer = null;
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
-        mMediaSession.release();
     }
 
     @Override
@@ -241,10 +281,14 @@ public class StepsFragment extends Fragment
         if ((playbackState == Player.STATE_READY) && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mExoPlayer.getCurrentPosition(), 1f);
-        } else if ((playbackState == Player.STATE_READY)) {
+        } else if (playbackState == Player.STATE_READY) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                     mExoPlayer.getCurrentPosition(), 1f);
+        } else if (playbackState == Player.STATE_ENDED) {
+            mViewModel.setVideoPosition(0);
+            skipToNext();
         }
+
         mMediaSession.setPlaybackState(mStateBuilder.build());
     }
 
@@ -310,7 +354,14 @@ public class StepsFragment extends Fragment
         @Override
         public void onReceive(Context context, Intent intent) {
             MediaButtonReceiver.handleIntent(mMediaSession, intent);
-            Log.d(TAG, "onReceive");
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mExoPlayer != null) mViewModel.setVideoPosition(mExoPlayer.getContentPosition());
+        else mViewModel.setVideoPosition(0);
+
     }
 }
