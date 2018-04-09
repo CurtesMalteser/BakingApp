@@ -1,6 +1,7 @@
 package com.curtesmalteser.bakingapp.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -9,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -27,6 +27,9 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.detailsContainer)
     FrameLayout detailsContainer;
 
+    @BindView(R.id.ingredientsAndStepsContainer)
+    FrameLayout ingredientsAndStepsContainer;
+
     @BindView(R.id.toolbarDetails)
     Toolbar toolbar;
 
@@ -36,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
 
+    private DetailsActivityViewModel mViewModel;
     private FragmentManager fragmentManager;
 
     @Override
@@ -45,27 +49,23 @@ public class DetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(this);
-        DetailsActivityViewModel viewModel = ViewModelProviders.of(this, factory).get(DetailsActivityViewModel.class);
+        mViewModel = ViewModelProviders.of(this, factory).get(DetailsActivityViewModel.class);
+
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
+
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-
-
-        mNavigationView.setNavigationItemSelectedListener(item -> {
-                    item.setChecked(true);
-                    mDrawerLayout.closeDrawers();
-                    return true;
-                }
-        );
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         fragmentManager = getSupportFragmentManager();
 
         if (getIntent().hasExtra(getResources().getString(R.string.recipe_id))) {
 
-            viewModel.setRecipes(getIntent().getIntExtra(getResources().getString(R.string.recipe_id), 1));
-            viewModel.getRecipeById().observe(DetailActivity.this, fullRecipes ->
+            mViewModel.setRecipes(getIntent().getIntExtra(getResources().getString(R.string.recipe_id), 1));
+            mViewModel.getRecipeById().observe(DetailActivity.this, fullRecipes ->
                     {
                         if (fullRecipes != null) {
                             toolbar.setTitle(fullRecipes.bakingModel.getName());
@@ -77,8 +77,7 @@ public class DetailActivity extends AppCompatActivity {
         DetailsFragment detailsFragment = new DetailsFragment();
         IngredientsFragment ingredientsFragment = new IngredientsFragment();
         StepsFragment stepsFragment = new StepsFragment();
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
+
 
         if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
@@ -96,20 +95,18 @@ public class DetailActivity extends AppCompatActivity {
                     .commit();
         }
 
-        viewModel.getStepScreen().observe(this, step ->
+        mViewModel.getStepScreen().observe(this, step ->
         {
             if (isTablet && isLandscape) {
                 if (!stepsFragment.isVisible()) {
-                    Log.d("XPTO", "onCreate: tablet");
                     fragmentManager.beginTransaction()
                             .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
                             .commit();
                 }
             } else {
-
                 detailsContainer.setVisibility(View.INVISIBLE);
-               if (!stepsFragment.isVisible())
-                    Log.d("XPTO", "onCreate: not tablet");
+                ingredientsAndStepsContainer.setVisibility(View.VISIBLE);
+                if (!stepsFragment.isVisible())
                     fragmentManager.beginTransaction()
                             .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
                             .commit();
@@ -118,6 +115,44 @@ public class DetailActivity extends AppCompatActivity {
 
         // TODO: 01/04/2018 -->> Add click on Ingredients textview for tablet so when fragment isn't visible
         // we can navigate back to it
+
+        mNavigationView.setNavigationItemSelectedListener(menuItem -> {
+
+            menuItem.setChecked(true);
+            mDrawerLayout.closeDrawers();
+
+            switch (menuItem.getItemId()) {
+                case R.id.nav_recipes:
+                    Intent i = new Intent(this, RecipeActivity.class);
+                    startActivity(i);
+                    finish();
+                    return true;
+                case R.id.nav_details:
+                    detailsContainer.setVisibility(View.VISIBLE);
+                    ingredientsAndStepsContainer.setVisibility(View.INVISIBLE);
+                    if (stepsFragment.mPlayerView.getPlayer() != null)
+                        stepsFragment.mPlayerView.getPlayer().release();
+                    if (!detailsFragment.isVisible()) {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.detailsContainer, detailsFragment)
+                                .commit();
+                    }
+                    return true;
+                case R.id.nav_ingredients:
+                    detailsContainer.setVisibility(View.INVISIBLE);
+                    ingredientsAndStepsContainer.setVisibility(View.VISIBLE);
+                    if (!ingredientsFragment.isVisible())
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.ingredientsAndStepsContainer, ingredientsFragment)
+                                .commit();
+                    return true;
+                case R.id.nav_steps:
+                    mViewModel.setStepScreen(0);
+                    return true;
+                default:
+                    return false;
+            }
+        });
     }
 
     @Override

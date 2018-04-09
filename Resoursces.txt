@@ -7,6 +7,9 @@ MMVM
 Cake PalceHolder
 http://simpleicon.com/pestry_cake.html
 
+NavigationDrawer
+https://developer.android.com/training/implementing-navigation/nav-drawer.html#ListItemClicks
+
 ExoPlayer custom controls
 - https://github.com/google/ExoPlayer/blob/dev-v2-r2.7.3/demos/main/src/main/java/com/google/android/exoplayer2/demo/PlayerActivity.java
 - https://github.com/google/ExoPlayer/blob/dev-v2-r2.7.3/library/ui/src/main/res/layout/exo_playback_control_view.xml
