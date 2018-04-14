@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IngredientsFragment extends Fragment
-        implements IngredientsAdapter.ListItemClickListener {
+public class IngredientsFragment extends Fragment {
 
 
     public IngredientsFragment() {
@@ -48,7 +47,7 @@ public class IngredientsFragment extends Fragment
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         DetailsActivityViewModel viewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        mIngredientsAdapter = new IngredientsAdapter(mIngredientsList, this);
+        mIngredientsAdapter = new IngredientsAdapter(mIngredientsList);
         mIngredientsRecyclerView.setAdapter(mIngredientsAdapter);
         mIngredientsRecyclerView.setHasFixedSize(true);
         mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -64,10 +63,5 @@ public class IngredientsFragment extends Fragment
         );
 
         return v;
-    }
-
-    @Override
-    public void onListItemClick(Ingredient ingredient) {
-
     }
 }

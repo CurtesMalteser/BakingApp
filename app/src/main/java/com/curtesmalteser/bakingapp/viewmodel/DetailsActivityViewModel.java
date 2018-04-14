@@ -15,6 +15,7 @@ public class DetailsActivityViewModel extends ViewModel {
 
     private LiveData<FullRecipes> mRecipes;
     private MutableLiveData<Integer> mStep = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mShowIngredients = new MutableLiveData<>();
     private MutableLiveData<Long> mVideoPosition = new MutableLiveData<>();
 
     private final Repository mRepository;
@@ -47,5 +48,13 @@ public class DetailsActivityViewModel extends ViewModel {
 
     public MutableLiveData<Long> getVideoPosition() {
         return mVideoPosition;
+    }
+
+    public void setShowIngredients(boolean showIngredients) {
+        mShowIngredients.setValue(showIngredients);
+    }
+
+    public LiveData<Boolean> getShowIngredients() {
+        return mShowIngredients;
     }
 }

@@ -37,9 +37,6 @@ public class DetailsFragment extends Fragment
         setRetainInstance(true);
     }
 
-    @BindView(R.id.tvSelectIngredients)
-    TextView tvSelectIngredients;
-
     @BindView(R.id.stepsRecyclerView)
     RecyclerView mStepsRecyclerView;
 
@@ -60,8 +57,6 @@ public class DetailsFragment extends Fragment
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        tvSelectIngredients.setOnClickListener(tv -> Log.d("AJDB", "onCreateView: " + "lol"));
-
         mStepsAdapter = new StepsAdapter(mStepsList, this);
         mStepsRecyclerView.setAdapter(mStepsAdapter);
         mStepsRecyclerView.setHasFixedSize(true);
@@ -73,9 +68,9 @@ public class DetailsFragment extends Fragment
         mViewModel.getRecipeById().observe(DetailsFragment.this, fullRecipes ->
                 {
                     if (fullRecipes != null)
-                            mStepsList.clear();
-                            mStepsList.addAll(fullRecipes.stepList);
-                            mStepsAdapter.notifyDataSetChanged();
+                        mStepsList.clear();
+                    mStepsList.addAll(fullRecipes.stepList);
+                    mStepsAdapter.notifyDataSetChanged();
                 }
         );
         return v;
@@ -83,7 +78,12 @@ public class DetailsFragment extends Fragment
 
     @Override
     public void onListItemClick(int position) {
-        mViewModel.setStepScreen(position);
+        if (position == 0) {
+            mViewModel.setShowIngredients(true);
+
+        } else
+            mViewModel.setShowIngredients(false);
+            mViewModel.setStepScreen(position - 1);
     }
 
     @Override

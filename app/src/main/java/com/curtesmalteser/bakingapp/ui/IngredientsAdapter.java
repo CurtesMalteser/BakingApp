@@ -12,6 +12,7 @@ import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.model.Ingredient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,16 +23,10 @@ import butterknife.ButterKnife;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder>{
 
-    private ArrayList<Ingredient> mIngredientsArrayList;
-    private ListItemClickListener mListItemClickListener;
+    private List<Ingredient> mIngredientsArrayList;
 
-    public interface ListItemClickListener{
-        void onListItemClick(Ingredient ingredient);
-    }
-
-    IngredientsAdapter(ArrayList<Ingredient> mIngredientsArrayList, ListItemClickListener mListItemClickListener) {
+    IngredientsAdapter(List<Ingredient> mIngredientsArrayList) {
         this.mIngredientsArrayList = mIngredientsArrayList;
-        this.mListItemClickListener = mListItemClickListener;
     }
 
     @NonNull
@@ -56,8 +51,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return mIngredientsArrayList.size();
     }
 
-    public class IngredientsViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    public class IngredientsViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tvIngredient)
         TextView tvIngredient;
@@ -71,14 +65,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         public IngredientsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            Ingredient ingredient = mIngredientsArrayList.get(getAdapterPosition());
-            mListItemClickListener.onListItemClick(ingredient);
-
         }
 
         public void bind(int position) {

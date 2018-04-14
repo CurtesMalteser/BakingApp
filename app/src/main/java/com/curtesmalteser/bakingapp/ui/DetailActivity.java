@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -75,7 +76,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         DetailsFragment detailsFragment = new DetailsFragment();
-        IngredientsFragment ingredientsFragment = new IngredientsFragment();
+        //IngredientsFragment ingredientsFragment = new IngredientsFragment();
         StepsFragment stepsFragment = new StepsFragment();
 
 
@@ -83,38 +84,63 @@ public class DetailActivity extends AppCompatActivity {
             fragmentManager.beginTransaction()
                     .replace(R.id.detailsContainer, detailsFragment)
                     .commit();
-        } else if (isTablet && isLandscape) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.detailsContainer, detailsFragment)
-                    .commit();
-        }
 
-        if (isTablet && isLandscape) {
-            fragmentManager.beginTransaction()
-                    .add(R.id.ingredientsAndStepsContainer, ingredientsFragment)
-                    .commit();
-        }
+           /* if (isTablet && isLandscape) {
+                fragmentManager.beginTransaction()
+                        .add(R.id.ingredientsAndStepsContainer, ingredientsFragment)
+                        .commit();
+            }*/
 
-        mViewModel.getStepScreen().observe(this, step ->
-        {
-            if (isTablet && isLandscape) {
-                if (!stepsFragment.isVisible()) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
-                            .commit();
-                }
-            } else {
-                detailsContainer.setVisibility(View.INVISIBLE);
-                ingredientsAndStepsContainer.setVisibility(View.VISIBLE);
-                if (!stepsFragment.isVisible())
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
-                            .commit();
+            mViewModel.setShowIngredients(true);
+            Log.d("TAG", "onCreate: activity + step 1" );
+            if (isTablet && !stepsFragment.isVisible()) {
+                fragmentManager.beginTransaction()
+                        .add(R.id.ingredientsAndStepsContainer, stepsFragment)
+                        .commit();
             }
-        });
+        }
 
-        // TODO: 01/04/2018 -->> Add click on Ingredients textview for tablet so when fragment isn't visible
-        // we can navigate back to it
+      /*  mViewModel.setShowIngredients(true);
+        if (isTablet && !stepsFragment.isVisible()) {
+            fragmentManager.beginTransaction()
+                    .add(R.id.ingredientsAndStepsContainer, stepsFragment)
+                    .commit();
+        }*/
+
+       /* mViewModel.getStepScreen().observe(this, step ->
+        {
+            mViewModel.setShowIngredients(false);
+            if (isTablet) {
+                //if (!stepsFragment.isVisible()) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
+                            .commit();
+              //  }
+            }
+        });*
+
+       /* mViewModel.getShowIngredients().observe(this, bool -> {
+            if (bool == null) Log.d("lol", "onCreate: is null");
+            Log.d("lol", "onCreate: " + bool);
+            if (isTablet && bool) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.ingredientsAndStepsContainer, ingredientsFragment)
+                        .commit();
+            } else {
+                    mViewModel.getStepScreen().observe(this, step ->
+                    {
+                        mViewModel.setShowIngredients(false);
+                        if (isTablet) {
+                            if (!stepsFragment.isVisible()) {
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
+                                        .commit();
+                            }
+                        }
+                    });
+           // }
+        //});*/
+
 
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
 
@@ -127,27 +153,25 @@ public class DetailActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                     return true;
+
                 case R.id.nav_details:
-                    detailsContainer.setVisibility(View.VISIBLE);
-                    ingredientsAndStepsContainer.setVisibility(View.INVISIBLE);
-                    if (stepsFragment.mPlayerView.getPlayer() != null)
-                        stepsFragment.mPlayerView.getPlayer().release();
                     if (!detailsFragment.isVisible()) {
                         fragmentManager.beginTransaction()
                                 .replace(R.id.detailsContainer, detailsFragment)
                                 .commit();
                     }
+
                     return true;
                 case R.id.nav_ingredients:
-                    detailsContainer.setVisibility(View.INVISIBLE);
-                    ingredientsAndStepsContainer.setVisibility(View.VISIBLE);
-                    if (!ingredientsFragment.isVisible())
+                    /*if (!ingredientsFragment.isVisible())
                         fragmentManager.beginTransaction()
                                 .replace(R.id.ingredientsAndStepsContainer, ingredientsFragment)
-                                .commit();
+                                .commit();*/
                     return true;
+
                 case R.id.nav_steps:
                     mViewModel.setStepScreen(0);
+
                     return true;
                 default:
                     return false;
