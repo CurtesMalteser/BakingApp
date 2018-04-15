@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.curtesmalteser.bakingapp.R;
@@ -47,12 +49,14 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        ButterKnife.bind(this);
+
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
 
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, factory).get(DetailsActivityViewModel.class);
 
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -90,13 +94,11 @@ public class DetailActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction()
                             .add(R.id.ingredientsAndStepsContainer, ingredientsFragment)
                             .commit();
-
             }
         }
 
         mViewModel.getShowIngredients().observe(this, bool -> {
             if (bool) {
-                Log.d("TAG", "Should be true: " + bool);
                 if (isTablet) {
                     if (!ingredientsFragment.isVisible())
                         fragmentManager.beginTransaction()
@@ -108,9 +110,9 @@ public class DetailActivity extends AppCompatActivity {
                                 .replace(R.id.detailsContainer, ingredientsFragment)
                                 .commit();
                 }
-            } else {
-                Log.d("TAG", "Should be false: " + bool);
 
+
+            } else {
                 if (isTablet) {
                     if (!stepsFragment.isVisible()) {
                         fragmentManager.beginTransaction()
@@ -123,6 +125,8 @@ public class DetailActivity extends AppCompatActivity {
                                 .replace(R.id.detailsContainer, stepsFragment)
                                 .commit();
                     }
+
+                    if (isLandscape) toolbar.setVisibility(View.GONE);
                 }
 
             }

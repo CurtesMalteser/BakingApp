@@ -55,6 +55,3 @@ b)  create the exo_custom_control_view.XML to override the default implementatio
 3 - Follow the steps from the lectures and to implement to the videos I followed this Medium article
 	https://medium.com/@yusufcakmak/playing-audio-and-video-with-exoplayer-2-4f4c2c2d9772
 
-
-
-

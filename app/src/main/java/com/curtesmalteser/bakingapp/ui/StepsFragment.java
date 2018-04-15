@@ -1,66 +1,74 @@
 package com.curtesmalteser.bakingapp.ui;
 
 
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.media.session.MediaButtonReceiver;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+        import android.app.Activity;
+        import android.arch.lifecycle.ViewModelProviders;
+        import android.content.BroadcastReceiver;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.content.res.Resources;
+        import android.graphics.BitmapFactory;
+        import android.net.Uri;
+        import android.os.Bundle;
+        import android.support.annotation.NonNull;
+        import android.support.annotation.Nullable;
+        import android.support.constraint.ConstraintLayout;
+        import android.support.v4.app.Fragment;
+        import android.support.v4.content.res.ResourcesCompat;
+        import android.support.v4.media.session.MediaButtonReceiver;
+        import android.support.v4.media.session.MediaSessionCompat;
+        import android.support.v4.media.session.PlaybackStateCompat;
+        import android.support.v7.widget.LinearLayoutManager;
+        import android.support.v7.widget.RecyclerView;
+        import android.text.Layout;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.view.Window;
+        import android.view.WindowManager;
+        import android.widget.Button;
+        import android.widget.ImageButton;
+        import android.widget.ImageView;
+        import android.widget.LinearLayout;
+        import android.widget.TextView;
 
-import com.curtesmalteser.bakingapp.R;
-import com.curtesmalteser.bakingapp.data.InjectorUtils;
-import com.curtesmalteser.bakingapp.data.model.Ingredient;
-import com.curtesmalteser.bakingapp.data.model.Step;
-import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModel;
-import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.PlaybackParameters;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.RenderersFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
+        import com.curtesmalteser.bakingapp.R;
+        import com.curtesmalteser.bakingapp.data.InjectorUtils;
+        import com.curtesmalteser.bakingapp.data.model.Ingredient;
+        import com.curtesmalteser.bakingapp.data.model.Step;
+        import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModel;
+        import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
+        import com.google.android.exoplayer2.DefaultLoadControl;
+        import com.google.android.exoplayer2.DefaultRenderersFactory;
+        import com.google.android.exoplayer2.ExoPlaybackException;
+        import com.google.android.exoplayer2.ExoPlayerFactory;
+        import com.google.android.exoplayer2.LoadControl;
+        import com.google.android.exoplayer2.PlaybackParameters;
+        import com.google.android.exoplayer2.Player;
+        import com.google.android.exoplayer2.RenderersFactory;
+        import com.google.android.exoplayer2.SimpleExoPlayer;
+        import com.google.android.exoplayer2.Timeline;
+        import com.google.android.exoplayer2.source.ExtractorMediaSource;
+        import com.google.android.exoplayer2.source.MediaSource;
+        import com.google.android.exoplayer2.source.TrackGroupArray;
+        import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+        import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+        import com.google.android.exoplayer2.trackselection.TrackSelector;
+        import com.google.android.exoplayer2.ui.PlayerView;
+        import com.google.android.exoplayer2.upstream.DataSource;
+        import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+        import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+        import com.google.android.exoplayer2.util.Util;
+        import com.squareup.picasso.Callback;
+        import com.squareup.picasso.NetworkPolicy;
+        import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
+        import java.util.ArrayList;
+        import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+        import butterknife.BindView;
+        import butterknife.ButterKnife;
 
 public class StepsFragment extends Fragment
         implements Player.EventListener {
@@ -70,6 +78,9 @@ public class StepsFragment extends Fragment
     }
 
     private static final String TAG = StepsFragment.class.getSimpleName();
+
+    @BindView(R.id.uiStep)
+    ConstraintLayout uiStep;
 
     @Nullable
     @BindView(R.id.playerView)
@@ -121,7 +132,11 @@ public class StepsFragment extends Fragment
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
+
         View view = inflater.inflate(R.layout.ui_step, container, false);
+
         releasePlayer();
 
         ButterKnife.bind(this, view);
@@ -179,14 +194,22 @@ public class StepsFragment extends Fragment
                         }
 
                         if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
+
                             mPlayerView.setVisibility(View.VISIBLE);
                             placeHolderOnMovieError.setVisibility(View.INVISIBLE);
                             initializePlayer(steps.get(position).getVideoURL());
+
+                            if (!isTablet && isLandscape) {
+                                setFullscreen(getActivity());
+                                mPlayerView.setLayoutParams(getLayoutParams());
+                            }
+
                         } else {
                             releasePlayer();
 
                             placeHolderOnMovieError.setVisibility(View.VISIBLE);
                             mPlayerView.setVisibility(View.INVISIBLE);
+
                             if (steps.get(position).getThumbnailURL() != null && !steps.get(position).getThumbnailURL().equals("")) {
                                 Picasso.with(getContext())
                                         .load(steps.get(position).getThumbnailURL())
@@ -239,6 +262,16 @@ public class StepsFragment extends Fragment
             buttonNext.setOnClickListener(v1 -> skipToNext());
 
         return view;
+    }
+
+    @NonNull
+    private ConstraintLayout.LayoutParams getLayoutParams() {
+        if (buttonPrevious != null)
+            buttonPrevious.setVisibility(View.INVISIBLE);
+        if (buttonNext != null)
+            buttonNext.setVisibility(View.INVISIBLE);
+
+        return new ConstraintLayout.LayoutParams(Resources.getSystem().getDisplayMetrics().widthPixels, Resources.getSystem().getDisplayMetrics().heightPixels);
     }
 
     private void skipToPrevious() {
@@ -404,5 +437,10 @@ public class StepsFragment extends Fragment
         if (mExoPlayer != null) mViewModel.setVideoPosition(mExoPlayer.getContentPosition());
         else mViewModel.setVideoPosition(0);
 
+    }
+
+    public void setFullscreen(Activity activity) {
+        activity.getWindow()
+                .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 }
