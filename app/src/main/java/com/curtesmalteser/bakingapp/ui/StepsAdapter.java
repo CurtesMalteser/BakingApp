@@ -4,10 +4,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
@@ -24,8 +29,10 @@ import butterknife.ButterKnife;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
 
+    private Context mContext;
     private ArrayList<Step> mStepsArrayList;
     private ListItemClickListener mOnClickListener;
+    private SparseBooleanArray mSelectedItems;
 
     private static final int INGREDIENT_TV = 0;
     private static final int STEPS_VIEWS = 1;
@@ -34,9 +41,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         void onListItemClick(int step);
     }
 
-    StepsAdapter(ArrayList<Step> stepsArrayList, ListItemClickListener listItemClickListener) {
+    StepsAdapter(Context context, ArrayList<Step> stepsArrayList, ListItemClickListener listItemClickListener) {
+        this.mContext = context;
         this.mStepsArrayList = stepsArrayList;
         this.mOnClickListener = listItemClickListener;
+        mSelectedItems = new SparseBooleanArray();
     }
 
 
@@ -77,30 +86,52 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
             implements View.OnClickListener {
 
         @Nullable
-        @BindView(R.id.tvStep)
-        TextView tvStep;
+        @BindView(R.id.singleSelectIngredientsRow)
+        FrameLayout singleSelectIngredientsRow;
 
         @Nullable
         @BindView(R.id.tvSelectIngredientsSingleRow)
         TextView tvIngredients;
 
+        @Nullable
+        @BindView(R.id.singleStepRow)
+        ConstraintLayout singleStepRow;
+
+        @Nullable
+        @BindView(R.id.tvStep)
+        TextView tvStep;
+
         public StepsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
-
         }
 
         @Override
         public void onClick(View v) {
+            if (mSelectedItems.get(getAdapterPosition(), false)) {
+                mSelectedItems.delete(getAdapterPosition());
+                if (getAdapterPosition() == INGREDIENT_TV) {
+                    singleSelectIngredientsRow.setSelected(false);
+                } else{
+                    singleStepRow.setSelected(false);
+                }
+            } else {
+                mSelectedItems.put(getAdapterPosition(), true);
+                if (getAdapterPosition() == INGREDIENT_TV) {
+                    singleSelectIngredientsRow.setSelected(true);
+                } else {
+                    singleStepRow.setSelected(true);
+                }
+            }
             mOnClickListener.onListItemClick(getAdapterPosition());
-            itemView.setBackgroundColor(Color.parseColor("#bdbdbd"));
         }
 
         public void bind(int position) {
             final Step step = mStepsArrayList.get(position);
-            if (position != INGREDIENT_TV)
-            tvStep.setText(step.getShortDescription());
+            if (position != INGREDIENT_TV) {
+                tvStep.setText(step.getShortDescription());
+            }
         }
     }
 }

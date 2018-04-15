@@ -57,7 +57,7 @@ public class DetailsFragment extends Fragment
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        mStepsAdapter = new StepsAdapter(mStepsList, this);
+        mStepsAdapter = new StepsAdapter(getContext(), mStepsList, this);
         mStepsRecyclerView.setAdapter(mStepsAdapter);
         mStepsRecyclerView.setHasFixedSize(true);
         mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
