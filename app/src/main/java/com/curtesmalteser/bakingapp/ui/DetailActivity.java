@@ -53,7 +53,6 @@ public class DetailActivity extends AppCompatActivity {
         mViewModel = ViewModelProviders.of(this, factory).get(DetailsActivityViewModel.class);
 
         boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

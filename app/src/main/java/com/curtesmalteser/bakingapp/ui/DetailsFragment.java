@@ -80,13 +80,12 @@ public class DetailsFragment extends Fragment
     @Override
     public void onListItemClick(int position) {
         if (position == 0) {
-            Log.d("TAG", "onListItemClick: " + position);
             mViewModel.setShowIngredients(true);
 
-        } else
-            Log.d("TAG", "onListItemClick: " + position);
+        } else {
             mViewModel.setShowIngredients(false);
             mViewModel.setStepScreen(position - 1);
+        }
     }
 
     @Override

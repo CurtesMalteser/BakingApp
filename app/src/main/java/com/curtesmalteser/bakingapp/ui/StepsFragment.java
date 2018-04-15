@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,6 +88,14 @@ public class StepsFragment extends Fragment
     ImageButton exoNext;
 
     @Nullable
+    @BindView(R.id.buttonPrevious)
+    Button buttonPrevious;
+
+    @Nullable
+    @BindView(R.id.buttonNext)
+    Button buttonNext;
+
+    @Nullable
     @BindView(R.id.placeHolderOnMovieError)
     ImageView placeHolderOnMovieError;
 
@@ -149,10 +158,24 @@ public class StepsFragment extends Fragment
                         if (position == 0) {
                             exoPrev.setVisibility(View.INVISIBLE);
                             exoNext.setVisibility(View.VISIBLE);
-                        }
-                        if (position == numberOfSteps) {
+                            if (buttonPrevious != null)
+                                buttonPrevious.setVisibility(View.INVISIBLE);
+                            if (buttonNext != null)
+                                buttonNext.setVisibility(View.VISIBLE);
+                        } else if (position == numberOfSteps) {
                             exoNext.setVisibility(View.INVISIBLE);
                             exoPrev.setVisibility(View.VISIBLE);
+                            if (buttonNext != null)
+                                buttonNext.setVisibility(View.INVISIBLE);
+                            if (buttonPrevious != null)
+                                buttonPrevious.setVisibility(View.VISIBLE);
+                        } else {
+                            exoNext.setVisibility(View.VISIBLE);
+                            exoPrev.setVisibility(View.VISIBLE);
+                            if (buttonPrevious != null)
+                                buttonPrevious.setVisibility(View.VISIBLE);
+                            if (buttonNext != null)
+                                buttonNext.setVisibility(View.VISIBLE);
                         }
 
                         if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
@@ -203,13 +226,17 @@ public class StepsFragment extends Fragment
                     }
                 }
             });
-
-
         });
 
         exoPrev.setOnClickListener(v1 -> skipToPrevious());
 
+        if (buttonPrevious != null)
+            buttonPrevious.setOnClickListener(v1 -> skipToPrevious());
+
         exoNext.setOnClickListener(v1 -> skipToNext());
+
+        if (buttonNext != null)
+            buttonNext.setOnClickListener(v1 -> skipToNext());
 
         return view;
     }

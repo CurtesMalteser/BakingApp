@@ -9,4 +9,6 @@
     <string name="steps">Steps</string>
     <string name="recipeId">recipeID</string>
     <string name="bundle">bundle</string>
+    <string name="string_previous">Previous</string>
+    <string name="string_next">Next</string>
 </resources>
