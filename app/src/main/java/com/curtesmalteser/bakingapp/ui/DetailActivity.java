@@ -76,7 +76,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         DetailsFragment detailsFragment = new DetailsFragment();
-        //IngredientsFragment ingredientsFragment = new IngredientsFragment();
+        IngredientsFragment ingredientsFragment = new IngredientsFragment();
         StepsFragment stepsFragment = new StepsFragment();
 
 
@@ -85,62 +85,46 @@ public class DetailActivity extends AppCompatActivity {
                     .replace(R.id.detailsContainer, detailsFragment)
                     .commit();
 
-           /* if (isTablet && isLandscape) {
-                fragmentManager.beginTransaction()
-                        .add(R.id.ingredientsAndStepsContainer, ingredientsFragment)
-                        .commit();
-            }*/
+            if (isTablet) {
+                mViewModel.setShowIngredients(true);
+                if (!ingredientsFragment.isVisible())
+                    fragmentManager.beginTransaction()
+                            .add(R.id.ingredientsAndStepsContainer, ingredientsFragment)
+                            .commit();
 
-            mViewModel.setShowIngredients(true);
-            Log.d("TAG", "onCreate: activity + step 1" );
-            if (isTablet && !stepsFragment.isVisible()) {
-                fragmentManager.beginTransaction()
-                        .add(R.id.ingredientsAndStepsContainer, stepsFragment)
-                        .commit();
             }
         }
 
-      /*  mViewModel.setShowIngredients(true);
-        if (isTablet && !stepsFragment.isVisible()) {
-            fragmentManager.beginTransaction()
-                    .add(R.id.ingredientsAndStepsContainer, stepsFragment)
-                    .commit();
-        }*/
-
-       /* mViewModel.getStepScreen().observe(this, step ->
-        {
-            mViewModel.setShowIngredients(false);
-            if (isTablet) {
-                //if (!stepsFragment.isVisible()) {
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
-                            .commit();
-              //  }
-            }
-        });*
-
-       /* mViewModel.getShowIngredients().observe(this, bool -> {
-            if (bool == null) Log.d("lol", "onCreate: is null");
-            Log.d("lol", "onCreate: " + bool);
-            if (isTablet && bool) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.ingredientsAndStepsContainer, ingredientsFragment)
-                        .commit();
+        mViewModel.getShowIngredients().observe(this, bool -> {
+            if (bool) {
+                if (isTablet) {
+                    if (!ingredientsFragment.isVisible())
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.ingredientsAndStepsContainer, ingredientsFragment)
+                                .commit();
+                } else {
+                    if (!ingredientsFragment.isVisible())
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.detailsContainer, ingredientsFragment)
+                                .commit();
+                }
             } else {
-                    mViewModel.getStepScreen().observe(this, step ->
-                    {
-                        mViewModel.setShowIngredients(false);
-                        if (isTablet) {
-                            if (!stepsFragment.isVisible()) {
-                                fragmentManager.beginTransaction()
-                                        .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
-                                        .commit();
-                            }
-                        }
-                    });
-           // }
-        //});*/
+                if (isTablet) {
+                    if (!stepsFragment.isVisible()) {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.ingredientsAndStepsContainer, stepsFragment)
+                                .commit();
+                    }
+                } else {
+                    if (!stepsFragment.isVisible()) {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.detailsContainer, stepsFragment)
+                                .commit();
+                    }
+                }
 
+            }
+        });
 
         mNavigationView.setNavigationItemSelectedListener(menuItem -> {
 
@@ -163,10 +147,7 @@ public class DetailActivity extends AppCompatActivity {
 
                     return true;
                 case R.id.nav_ingredients:
-                    /*if (!ingredientsFragment.isVisible())
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.ingredientsAndStepsContainer, ingredientsFragment)
-                                .commit();*/
+                    mViewModel.setShowIngredients(true);
                     return true;
 
                 case R.id.nav_steps:

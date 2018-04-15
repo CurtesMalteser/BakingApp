@@ -50,6 +50,7 @@ public class DetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //teste
         View v = inflater.inflate(R.layout.ui_detail, container, false);
 
         ButterKnife.bind(this, v);
@@ -79,9 +80,11 @@ public class DetailsFragment extends Fragment
     @Override
     public void onListItemClick(int position) {
         if (position == 0) {
+            Log.d("TAG", "onListItemClick: " + position);
             mViewModel.setShowIngredients(true);
 
         } else
+            Log.d("TAG", "onListItemClick: " + position);
             mViewModel.setShowIngredients(false);
             mViewModel.setStepScreen(position - 1);
     }
