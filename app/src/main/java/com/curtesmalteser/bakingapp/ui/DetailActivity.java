@@ -50,9 +50,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
-
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(this);
         mViewModel = ViewModelProviders.of(this, factory).get(DetailsActivityViewModel.class);
 
@@ -63,6 +60,9 @@ public class DetailActivity extends AppCompatActivity {
 
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
+        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -84,15 +84,16 @@ public class DetailActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null) {
+            if (!detailsFragment.isVisible())
             fragmentManager.beginTransaction()
-                    .replace(R.id.detailsContainer, detailsFragment)
+                    .add(R.id.detailsContainer, detailsFragment)
                     .commit();
 
             if (isTablet) {
                 mViewModel.setShowIngredients(true);
                 if (!ingredientsFragment.isVisible())
                     fragmentManager.beginTransaction()
-                            .add(R.id.ingredientsAndStepsContainer, ingredientsFragment)
+                            .replace(R.id.ingredientsAndStepsContainer, ingredientsFragment)
                             .commit();
             }
         }
