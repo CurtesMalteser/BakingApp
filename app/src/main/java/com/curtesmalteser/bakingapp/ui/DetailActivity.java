@@ -97,6 +97,7 @@ public class DetailActivity extends AppCompatActivity {
 
         mViewModel.getShowIngredients().observe(this, bool -> {
             if (bool) {
+                Log.d("TAG", "Should be true: " + bool);
                 if (isTablet) {
                     if (!ingredientsFragment.isVisible())
                         fragmentManager.beginTransaction()
@@ -109,6 +110,8 @@ public class DetailActivity extends AppCompatActivity {
                                 .commit();
                 }
             } else {
+                Log.d("TAG", "Should be false: " + bool);
+
                 if (isTablet) {
                     if (!stepsFragment.isVisible()) {
                         fragmentManager.beginTransaction()
@@ -139,11 +142,12 @@ public class DetailActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.nav_details:
-                    if (!detailsFragment.isVisible()) {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.detailsContainer, detailsFragment)
-                                .commit();
-                    }
+                    if (!isTablet)
+                        if (!detailsFragment.isVisible()) {
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.detailsContainer, detailsFragment)
+                                    .commit();
+                        }
 
                     return true;
                 case R.id.nav_ingredients:
@@ -151,6 +155,7 @@ public class DetailActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.nav_steps:
+                    mViewModel.setShowIngredients(false);
                     mViewModel.setStepScreen(0);
 
                     return true;

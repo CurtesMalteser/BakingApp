@@ -50,7 +50,6 @@ public class DetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //teste
         View v = inflater.inflate(R.layout.ui_detail, container, false);
 
         ButterKnife.bind(this, v);
@@ -70,6 +69,7 @@ public class DetailsFragment extends Fragment
                 {
                     if (fullRecipes != null)
                         mStepsList.clear();
+                    mStepsList.add(new Step(-1, "", "", "", "", -1));
                     mStepsList.addAll(fullRecipes.stepList);
                     mStepsAdapter.notifyDataSetChanged();
                 }

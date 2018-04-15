@@ -103,183 +103,115 @@ public class StepsFragment extends Fragment
     @BindView(R.id.ingredientsRecyclerView)
     RecyclerView mIngredientsRecyclerView;
 
-    private ArrayList<Ingredient> mIngredientsList = new ArrayList<>();
-    private IngredientsAdapter mIngredientsAdapter;
-
     private DetailsActivityViewModel mViewModel;
-
-    private View v;
-    boolean isItSteps;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
-        mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
-        mViewModel.getShowIngredients().observe(StepsFragment.this, bool -> {
-            Log.d("TAG", "onCreate: fragment + step 2" );
-            if (bool != null)
-                Log.d("TAG", "result of live data: " + bool);
-            isItSteps = bool;
-
-        });
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
+        mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        /*View view = inflater.inflate(R.layout.ui_ingredients, container, false);
+        View view = inflater.inflate(R.layout.ui_step, container, false);
+        releasePlayer();
 
         ButterKnife.bind(this, view);
 
-        mIngredientsAdapter = new IngredientsAdapter(mIngredientsList);
-        mIngredientsRecyclerView.setAdapter(mIngredientsAdapter);
-        mIngredientsRecyclerView.setHasFixedSize(true);
-        mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getContext().getResources(),
+                R.drawable.ic_pastry_cake));
 
-        mViewModel.getRecipeById().observe(StepsFragment.this, fullRecipes ->
+        mMediaSession = new MediaSessionCompat(getActivity().getApplicationContext(), TAG);
+        mMediaSession.setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mMediaSession.setMediaButtonReceiver(null);
+
+        mStateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(PlaybackStateCompat.ACTION_PLAY |
+                        PlaybackStateCompat.ACTION_PAUSE |
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                        PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                );
+
+        mMediaSession.setPlaybackState(mStateBuilder.build());
+        mMediaSession.setCallback(new MySessionCallback());
+        mMediaSession.setActive(true);
+
+        mViewModel.getRecipeById().observe(StepsFragment.this, fullRecipes -> {
+            numberOfSteps = fullRecipes.stepList.size() - 1;
+            steps = fullRecipes.stepList;
+
+            mViewModel.getStepScreen().observe(StepsFragment.this, position -> {
                 {
-                    if (fullRecipes != null)
-                        for (Ingredient ingredient : fullRecipes.ingredientList) {
-                            mIngredientsList.add(ingredient);
-                            mIngredientsAdapter.notifyDataSetChanged();
+                    if (position != null && position != -1) {
+                        currentStep = position;
+                        if (position == 0) {
+                            exoPrev.setVisibility(View.INVISIBLE);
+                            exoNext.setVisibility(View.VISIBLE);
                         }
-                }
-        );
+                        if (position == numberOfSteps) {
+                            exoNext.setVisibility(View.INVISIBLE);
+                            exoPrev.setVisibility(View.VISIBLE);
+                        }
 
-        v = view;*/
+                        if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
+                            mPlayerView.setVisibility(View.VISIBLE);
+                            placeHolderOnMovieError.setVisibility(View.INVISIBLE);
+                            initializePlayer(steps.get(position).getVideoURL());
+                        } else {
+                            releasePlayer();
 
+                            placeHolderOnMovieError.setVisibility(View.VISIBLE);
+                            mPlayerView.setVisibility(View.INVISIBLE);
+                            if (steps.get(position).getThumbnailURL() != null && !steps.get(position).getThumbnailURL().equals("")) {
+                                Picasso.with(getContext())
+                                        .load(steps.get(position).getThumbnailURL())
+                                        .networkPolicy(NetworkPolicy.OFFLINE)
+                                        .into(placeHolderOnMovieError, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
 
-        Log.d("TAG", "onCreateView: fragment + step 3" );
-        if (isItSteps) {
-            View view = inflater.inflate(R.layout.ui_ingredients, container, false);
+                                            }
 
-            ButterKnife.bind(this, view);
+                                            @Override
+                                            public void onError() {
+                                                //Try again online if cache failed
+                                                Picasso.with(getContext())
+                                                        .load(steps.get(position).getThumbnailURL())
+                                                        .error(R.drawable.ic_pastry_cake)
+                                                        .into(placeHolderOnMovieError, new Callback() {
+                                                            @Override
+                                                            public void onSuccess() {
 
-            mIngredientsAdapter = new IngredientsAdapter(mIngredientsList);
-            mIngredientsRecyclerView.setAdapter(mIngredientsAdapter);
-            mIngredientsRecyclerView.setHasFixedSize(true);
-            mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                                                            }
 
-            mViewModel.getRecipeById().observe(StepsFragment.this, fullRecipes ->
-                    {
-                        if (fullRecipes != null)
-                            for (Ingredient ingredient : fullRecipes.ingredientList) {
-                                mIngredientsList.add(ingredient);
-                                mIngredientsAdapter.notifyDataSetChanged();
-                            }
-                    }
-            );
+                                                            @Override
+                                                            public void onError() {
+                                                                Log.v("Picasso", "Could not fetch image");
+                                                            }
+                                                        });
+                                            }
+                                        });
 
-            v = view;
-
-        } else {
-            View view = inflater.inflate(R.layout.ui_step, container, false);
-            releasePlayer();
-
-            ButterKnife.bind(this, view);
-
-
-            mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getContext().getResources(),
-                    R.drawable.ic_pastry_cake));
-
-            mMediaSession = new MediaSessionCompat(getActivity().getApplicationContext(), TAG);
-            mMediaSession.setFlags(
-                    MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                            MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-            mMediaSession.setMediaButtonReceiver(null);
-
-            mStateBuilder = new PlaybackStateCompat.Builder()
-                    .setActions(PlaybackStateCompat.ACTION_PLAY |
-                            PlaybackStateCompat.ACTION_PAUSE |
-                            PlaybackStateCompat.ACTION_PLAY_PAUSE |
-                            PlaybackStateCompat.ACTION_SKIP_TO_NEXT |
-                            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                    );
-
-            mMediaSession.setPlaybackState(mStateBuilder.build());
-            mMediaSession.setCallback(new MySessionCallback());
-            mMediaSession.setActive(true);
-
-            mViewModel.getRecipeById().observe(StepsFragment.this, fullRecipes -> {
-                numberOfSteps = fullRecipes.stepList.size() - 1;
-                steps = fullRecipes.stepList;
-
-                mViewModel.getStepScreen().observe(StepsFragment.this, position -> {
-                    {
-                        if (position != null && position != -1) {
-                            currentStep = position;
-                            if (position == 0) {
-                                exoPrev.setVisibility(View.INVISIBLE);
-                                exoNext.setVisibility(View.VISIBLE);
-                            }
-                            if (position == numberOfSteps) {
-                                exoNext.setVisibility(View.INVISIBLE);
-                                exoPrev.setVisibility(View.VISIBLE);
-                            }
-
-                            if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
-                                mPlayerView.setVisibility(View.VISIBLE);
-                                placeHolderOnMovieError.setVisibility(View.INVISIBLE);
-                                initializePlayer(steps.get(position).getVideoURL());
                             } else {
-                                releasePlayer();
-
-                                placeHolderOnMovieError.setVisibility(View.VISIBLE);
-                                mPlayerView.setVisibility(View.INVISIBLE);
-                                if (steps.get(position).getThumbnailURL() != null && !steps.get(position).getThumbnailURL().equals("")) {
-                                    Picasso.with(getContext())
-                                            .load(steps.get(position).getThumbnailURL())
-                                            .networkPolicy(NetworkPolicy.OFFLINE)
-                                            .into(placeHolderOnMovieError, new Callback() {
-                                                @Override
-                                                public void onSuccess() {
-
-                                                }
-
-                                                @Override
-                                                public void onError() {
-                                                    //Try again online if cache failed
-                                                    Picasso.with(getContext())
-                                                            .load(steps.get(position).getThumbnailURL())
-                                                            .error(R.drawable.ic_pastry_cake)
-                                                            .into(placeHolderOnMovieError, new Callback() {
-                                                                @Override
-                                                                public void onSuccess() {
-
-                                                                }
-
-                                                                @Override
-                                                                public void onError() {
-                                                                    Log.v("Picasso", "Could not fetch image");
-                                                                }
-                                                            });
-                                                }
-                                            });
-
-                                } else {
-                                    placeHolderOnMovieError.setImageResource(R.drawable.ic_pastry_cake);
-                                }
-
+                                placeHolderOnMovieError.setImageResource(R.drawable.ic_pastry_cake);
                             }
-                            stepDescription.setText(steps.get(position).getDescription());
+
                         }
+                        stepDescription.setText(steps.get(position).getDescription());
                     }
-                });
-
-
+                }
             });
 
-            exoPrev.setOnClickListener(v1 -> skipToPrevious());
 
-            exoNext.setOnClickListener(v1 -> skipToNext());
+        });
 
-            v = view;
-        }
+        exoPrev.setOnClickListener(v1 -> skipToPrevious());
 
-        return v;
+        exoNext.setOnClickListener(v1 -> skipToNext());
+
+        return view;
     }
 
     private void skipToPrevious() {
