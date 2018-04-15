@@ -58,3 +58,6 @@ b)  create the exo_custom_control_view.XML to override the default implementatio
 Espresso Recyclerview Test
 https://developer.android.com/training/testing/espresso/lists.html
 
+Highlight the selected Item of Recycler View
+https://thedeveloperworldisyours.com/android/highlight-selected-item-recycler-view/
+
