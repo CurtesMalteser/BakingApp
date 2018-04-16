@@ -9,6 +9,7 @@ package com.curtesmalteser.bakingapp.ui;
         import android.content.res.Resources;
         import android.graphics.BitmapFactory;
         import android.net.Uri;
+        import android.os.Build;
         import android.os.Bundle;
         import android.support.annotation.NonNull;
         import android.support.annotation.Nullable;
@@ -129,6 +130,8 @@ public class StepsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        setRetainInstance(true);
+
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
@@ -162,6 +165,22 @@ public class StepsFragment extends Fragment
         mMediaSession.setCallback(new MySessionCallback());
         mMediaSession.setActive(true);
 
+        lol(isTablet, isLandscape);
+
+        exoPrev.setOnClickListener(v1 -> skipToPrevious());
+
+        if (buttonPrevious != null)
+            buttonPrevious.setOnClickListener(v1 -> skipToPrevious());
+
+        exoNext.setOnClickListener(v1 -> skipToNext());
+
+        if (buttonNext != null)
+            buttonNext.setOnClickListener(v1 -> skipToNext());
+
+        return view;
+    }
+
+    private void lol(boolean isTablet, boolean isLandscape) {
         mViewModel.getRecipeById().observe(StepsFragment.this, fullRecipes -> {
             numberOfSteps = fullRecipes.stepList.size() - 1;
             steps = fullRecipes.stepList;
@@ -250,18 +269,6 @@ public class StepsFragment extends Fragment
                 }
             });
         });
-
-        exoPrev.setOnClickListener(v1 -> skipToPrevious());
-
-        if (buttonPrevious != null)
-            buttonPrevious.setOnClickListener(v1 -> skipToPrevious());
-
-        exoNext.setOnClickListener(v1 -> skipToNext());
-
-        if (buttonNext != null)
-            buttonNext.setOnClickListener(v1 -> skipToNext());
-
-        return view;
     }
 
     @NonNull
@@ -308,27 +315,58 @@ public class StepsFragment extends Fragment
         MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(url));
         mExoPlayer.prepare(videoSource);
+
         mViewModel.getVideoPosition().observe(StepsFragment.this, position -> {
+            Log.d(TAG, "initializePlayer: " + position);
             if (position != null && mExoPlayer != null) mExoPlayer.seekTo(position);
         });
         mExoPlayer.setPlayWhenReady(true);
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            Log.d(TAG, "onStart: SDK_INT > 23");
+            lol(true, true);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Util.SDK_INT <= 23 || mExoPlayer == null) {
+            Log.d(TAG, "onStart: SDK_INT <= 23 ");
+            lol(true, true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
     @Override
     public void onStop() {
         super.onStop();
-        mMediaSession.setActive(false);
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releasePlayer();
         mMediaSession.release();
     }
 
     private void releasePlayer() {
         if (mExoPlayer != null) {
+            if (mExoPlayer.getContentPosition() != 0) mViewModel.setVideoPosition(mExoPlayer.getContentPosition());
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -429,14 +467,6 @@ public class StepsFragment extends Fragment
         public void onReceive(Context context, Intent intent) {
             MediaButtonReceiver.handleIntent(mMediaSession, intent);
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mExoPlayer != null) mViewModel.setVideoPosition(mExoPlayer.getContentPosition());
-        else mViewModel.setVideoPosition(0);
-
     }
 
     public void setFullscreen(Activity activity) {
