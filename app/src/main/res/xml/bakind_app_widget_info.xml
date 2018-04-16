@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialKeyguardLayout="@layout/bakind_app_widget"
-    android:initialLayout="@layout/bakind_app_widget"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:initialKeyguardLayout="@layout/baking_app_widget"
+    android:initialLayout="@layout/baking_app_widget"
     android:minWidth="180dp"
     android:minHeight="110dp"
     android:previewImage="@drawable/ic_launcher_foreground"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:configure="com.curtesmalteser.bakingapp.ui.RecipeActivity"/>
+    android:configure="com.curtesmalteser.bakingapp.ui.RecipeActivity"
+    tools:targetApi="jelly_bean_mr1" />

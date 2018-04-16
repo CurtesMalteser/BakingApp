@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.db.FullRecipes;
-import com.curtesmalteser.bakingapp.data.model.BakingModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -28,8 +27,8 @@ import butterknife.ButterKnife;
 
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesViewHolder> {
 
-    private Context mContext;
-    private ArrayList<FullRecipes> mRecipesArrayList;
+    private final Context mContext;
+    private final ArrayList<FullRecipes> mRecipesArrayList;
     private final ListItemClickListener mOnClickListener;
 
     public interface ListItemClickListener {
@@ -78,7 +77,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
         @BindView(R.id.tvServings)
         TextView tvServings;
 
-        public RecipesViewHolder(View itemView) {
+        RecipesViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
@@ -91,7 +90,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
             mOnClickListener.onListItemClick(bakingModel);
         }
 
-        public void bind(int position) {
+        void bind(int position) {
             final FullRecipes model = mRecipesArrayList.get(position);
 
             if (model.bakingModel.getImage() != null && !model.bakingModel.getImage().equals("")) {

@@ -14,13 +14,13 @@ import com.curtesmalteser.bakingapp.data.db.FullRecipes;
 public class DetailsActivityViewModel extends ViewModel {
 
     private LiveData<FullRecipes> mRecipes;
-    private MutableLiveData<Integer> mStep = new MutableLiveData<>();
-    private MutableLiveData<Boolean> mShowIngredients = new MutableLiveData<>();
-    private MutableLiveData<Long> mVideoPosition = new MutableLiveData<>();
+    private final MutableLiveData<Integer> mStep = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mShowIngredients = new MutableLiveData<>();
+    private final MutableLiveData<Long> mVideoPosition = new MutableLiveData<>();
 
     private final Repository mRepository;
 
-    public DetailsActivityViewModel(Repository repository) {
+    DetailsActivityViewModel(Repository repository) {
         this.mRepository = repository;
     }
 

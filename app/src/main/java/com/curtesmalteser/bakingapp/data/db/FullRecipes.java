@@ -1,7 +1,6 @@
 package com.curtesmalteser.bakingapp.data.db;
 
 import android.arch.persistence.room.Embedded;
-import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Relation;
 
 import com.curtesmalteser.bakingapp.data.model.BakingModel;

@@ -1,8 +1,6 @@
 package com.curtesmalteser.bakingapp.data;
 
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
-import android.util.Log;
 
 import com.curtesmalteser.bakingapp.AppExecutors;
 import com.curtesmalteser.bakingapp.data.db.FullRecipes;
@@ -26,12 +24,10 @@ public class Repository {
     private final RecipeClassDao mDao;
     private final RecipesNetworkDataSource mRecipesNetworkDataSource;
     private final AppExecutors mExecutors;
-    private final Context mContext;
 
-    public Repository(Context context, RecipeClassDao mDao,
+    private Repository(RecipeClassDao mDao,
                       RecipesNetworkDataSource mRecipesNetworkDataSource,
                       AppExecutors mExecutors) {
-         this.mContext = context;
         this.mDao = mDao;
         this.mRecipesNetworkDataSource = mRecipesNetworkDataSource;
         this.mExecutors = mExecutors;
@@ -59,12 +55,12 @@ public class Repository {
         );
     }
 
-    synchronized static Repository getInstance(Context context, RecipeClassDao recipeClassDao,
+    synchronized static Repository getInstance(RecipeClassDao recipeClassDao,
                                                RecipesNetworkDataSource recipesNetworkDataSource,
                                                AppExecutors executors) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new Repository(context, recipeClassDao,
+                sInstance = new Repository(recipeClassDao,
                         recipesNetworkDataSource,
                         executors);
             }
@@ -72,7 +68,7 @@ public class Repository {
         return sInstance;
     }
 
-    public synchronized void initializeData() {
+    private synchronized void initializeData() {
         mExecutors.diskIO().execute(this::startFetchRecipes);
     }
 

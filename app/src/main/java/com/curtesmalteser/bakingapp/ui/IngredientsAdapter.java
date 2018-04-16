@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.model.Ingredient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,7 +22,7 @@ import butterknife.ButterKnife;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder>{
 
-    private List<Ingredient> mIngredientsArrayList;
+    private final List<Ingredient> mIngredientsArrayList;
 
     IngredientsAdapter(List<Ingredient> mIngredientsArrayList) {
         this.mIngredientsArrayList = mIngredientsArrayList;
@@ -62,12 +61,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         @BindView(R.id.tvMeasure)
         TextView tvMeasure;
 
-        public IngredientsViewHolder(View itemView) {
+        IngredientsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(int position) {
+        void bind(int position) {
             final Ingredient ingredient = mIngredientsArrayList.get(position);
             tvIngredient.setText(ingredient.getIngredient());
             tvQuantity.setText(String.valueOf(ingredient.getQuantity()));

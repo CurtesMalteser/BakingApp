@@ -1,75 +1,68 @@
 package com.curtesmalteser.bakingapp.ui;
 
 
-        import android.app.Activity;
-        import android.arch.lifecycle.ViewModelProviders;
-        import android.content.BroadcastReceiver;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.res.Resources;
-        import android.graphics.BitmapFactory;
-        import android.net.Uri;
-        import android.os.Build;
-        import android.os.Bundle;
-        import android.support.annotation.NonNull;
-        import android.support.annotation.Nullable;
-        import android.support.constraint.ConstraintLayout;
-        import android.support.v4.app.Fragment;
-        import android.support.v4.content.res.ResourcesCompat;
-        import android.support.v4.media.session.MediaButtonReceiver;
-        import android.support.v4.media.session.MediaSessionCompat;
-        import android.support.v4.media.session.PlaybackStateCompat;
-        import android.support.v7.widget.LinearLayoutManager;
-        import android.support.v7.widget.RecyclerView;
-        import android.text.Layout;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.view.Window;
-        import android.view.WindowManager;
-        import android.widget.Button;
-        import android.widget.ImageButton;
-        import android.widget.ImageView;
-        import android.widget.LinearLayout;
-        import android.widget.TextView;
+import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.media.session.MediaButtonReceiver;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-        import com.curtesmalteser.bakingapp.R;
-        import com.curtesmalteser.bakingapp.data.InjectorUtils;
-        import com.curtesmalteser.bakingapp.data.model.Ingredient;
-        import com.curtesmalteser.bakingapp.data.model.Step;
-        import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModel;
-        import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
-        import com.google.android.exoplayer2.DefaultLoadControl;
-        import com.google.android.exoplayer2.DefaultRenderersFactory;
-        import com.google.android.exoplayer2.ExoPlaybackException;
-        import com.google.android.exoplayer2.ExoPlayerFactory;
-        import com.google.android.exoplayer2.LoadControl;
-        import com.google.android.exoplayer2.PlaybackParameters;
-        import com.google.android.exoplayer2.Player;
-        import com.google.android.exoplayer2.RenderersFactory;
-        import com.google.android.exoplayer2.SimpleExoPlayer;
-        import com.google.android.exoplayer2.Timeline;
-        import com.google.android.exoplayer2.source.ExtractorMediaSource;
-        import com.google.android.exoplayer2.source.MediaSource;
-        import com.google.android.exoplayer2.source.TrackGroupArray;
-        import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-        import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-        import com.google.android.exoplayer2.trackselection.TrackSelector;
-        import com.google.android.exoplayer2.ui.PlayerView;
-        import com.google.android.exoplayer2.upstream.DataSource;
-        import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-        import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-        import com.google.android.exoplayer2.util.Util;
-        import com.squareup.picasso.Callback;
-        import com.squareup.picasso.NetworkPolicy;
-        import com.squareup.picasso.Picasso;
+import com.curtesmalteser.bakingapp.R;
+import com.curtesmalteser.bakingapp.data.InjectorUtils;
+import com.curtesmalteser.bakingapp.data.model.Step;
+import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModel;
+import com.curtesmalteser.bakingapp.viewmodel.DetailsActivityViewModelFactory;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.RenderersFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
-        import java.util.ArrayList;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
-        import butterknife.BindView;
-        import butterknife.ButterKnife;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class StepsFragment extends Fragment
         implements Player.EventListener {
@@ -126,6 +119,9 @@ public class StepsFragment extends Fragment
 
     private DetailsActivityViewModel mViewModel;
 
+    boolean isTablet;
+    boolean isLandscape;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -135,8 +131,8 @@ public class StepsFragment extends Fragment
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
-        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
+        isTablet = getResources().getBoolean(R.bool.is_tablet);
+        isLandscape = getResources().getBoolean(R.bool.is_landscape);
 
         View view = inflater.inflate(R.layout.ui_step, container, false);
 
@@ -165,8 +161,6 @@ public class StepsFragment extends Fragment
         mMediaSession.setCallback(new MySessionCallback());
         mMediaSession.setActive(true);
 
-        lol(isTablet, isLandscape);
-
         exoPrev.setOnClickListener(v1 -> skipToPrevious());
 
         if (buttonPrevious != null)
@@ -180,7 +174,7 @@ public class StepsFragment extends Fragment
         return view;
     }
 
-    private void lol(boolean isTablet, boolean isLandscape) {
+    private void setThePlayerOrPlaceholder(boolean isTablet, boolean isLandscape) {
         mViewModel.getRecipeById().observe(StepsFragment.this, fullRecipes -> {
             numberOfSteps = fullRecipes.stepList.size() - 1;
             steps = fullRecipes.stepList;
@@ -317,7 +311,6 @@ public class StepsFragment extends Fragment
         mExoPlayer.prepare(videoSource);
 
         mViewModel.getVideoPosition().observe(StepsFragment.this, position -> {
-            Log.d(TAG, "initializePlayer: " + position);
             if (position != null && mExoPlayer != null) mExoPlayer.seekTo(position);
         });
         mExoPlayer.setPlayWhenReady(true);
@@ -328,8 +321,7 @@ public class StepsFragment extends Fragment
     public void onStart() {
         super.onStart();
         if (Util.SDK_INT > 23) {
-            Log.d(TAG, "onStart: SDK_INT > 23");
-            lol(true, true);
+            setThePlayerOrPlaceholder(isTablet, isLandscape);
         }
     }
 
@@ -337,8 +329,7 @@ public class StepsFragment extends Fragment
     public void onResume() {
         super.onResume();
         if (Util.SDK_INT <= 23 || mExoPlayer == null) {
-            Log.d(TAG, "onStart: SDK_INT <= 23 ");
-            lol(true, true);
+            setThePlayerOrPlaceholder(isTablet, isLandscape);
         }
     }
 
@@ -366,7 +357,8 @@ public class StepsFragment extends Fragment
 
     private void releasePlayer() {
         if (mExoPlayer != null) {
-            if (mExoPlayer.getContentPosition() != 0) mViewModel.setVideoPosition(mExoPlayer.getContentPosition());
+            if (mExoPlayer.getContentPosition() != 0)
+                mViewModel.setVideoPosition(mExoPlayer.getContentPosition());
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -431,13 +423,12 @@ public class StepsFragment extends Fragment
 
     @Override
     public void onSeekProcessed() {
-        Log.d(TAG, "onSeekProcessed: ");
+
     }
 
     private class MySessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
-            Log.d(TAG, "onPlay: ");
             mExoPlayer.setPlayWhenReady(true);
 
         }
@@ -447,15 +438,6 @@ public class StepsFragment extends Fragment
             mExoPlayer.setPlayWhenReady(false);
         }
 
-        @Override
-        public void onSkipToPrevious() {
-            super.onSkipToPrevious();
-        }
-
-        @Override
-        public void onSkipToNext() {
-            super.onSkipToNext();
-        }
     }
 
     public static class MediaReceiver extends BroadcastReceiver {

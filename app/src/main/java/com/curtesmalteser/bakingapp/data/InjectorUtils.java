@@ -13,12 +13,12 @@ import com.curtesmalteser.bakingapp.viewmodel.RecipesActivityViewModelFactory;
  */
 
 public class InjectorUtils {
-    public static Repository provideRepository(Context context) {
+    private static Repository provideRepository(Context context) {
         RecipeDB db = RecipeDB.getInstance(context.getApplicationContext());
         AppExecutors executors = AppExecutors.getInstance();
         RecipesNetworkDataSource networkDataSource =
                 RecipesNetworkDataSource.getsInstance(executors);
-        return Repository.getInstance(context.getApplicationContext(), db.recipeClassDao(), networkDataSource, executors);
+        return Repository.getInstance(db.recipeClassDao(), networkDataSource, executors);
     }
 
     public static RecipesActivityViewModelFactory provideRecipesViewModelFactory(Context context){

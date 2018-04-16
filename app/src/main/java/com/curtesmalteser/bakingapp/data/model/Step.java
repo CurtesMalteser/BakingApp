@@ -25,21 +25,21 @@ public class Step {
 
     @SerializedName("id")
     @Expose
-    private Integer stepNumber;
+    private final Integer stepNumber;
     @SerializedName("shortDescription")
     @Expose
-    private String shortDescription;
+    private final String shortDescription;
     @SerializedName("description")
     @Expose
-    private String description;
+    private final String description;
     @SerializedName("videoURL")
     @Expose
-    private String videoURL;
+    private final String videoURL;
     @SerializedName("thumbnailURL")
     @Expose
-    private String thumbnailURL;
+    private final String thumbnailURL;
 
-    private int recipeId;
+    private final int recipeId;
 
     @Ignore
     public Step(Integer stepNumber, String shortDescription, String description, String videoURL, String thumbnailURL, int recipeId) {

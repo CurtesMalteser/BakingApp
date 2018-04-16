@@ -11,12 +11,15 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:layoutDirection="ltr"
-    android:background="#CC000000"
-    android:orientation="vertical">
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical"
+    tools:targetApi="jelly_bean_mr1"
+    tools:ignore="Overdraw">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,16 +29,20 @@
         android:orientation="horizontal">
 
         <ImageButton android:id="@+id/my_exo_prev"
-            style="@style/ExoMediaButton.Previous"/>
+            style="@style/ExoMediaButton.Previous"
+            android:contentDescription="@string/string_previous"/>
 
         <ImageButton android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play"/>
+            style="@style/ExoMediaButton.Play"
+            android:contentDescription="@string/string_play"/>
 
         <ImageButton android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause"/>
+            style="@style/ExoMediaButton.Pause"
+            android:contentDescription="@string/string_pause"/>
 
         <ImageButton android:id="@+id/my_exo_next"
-            style="@style/ExoMediaButton.Next"/>
+            style="@style/ExoMediaButton.Next"
+            android:contentDescription="@string/string_next"/>
 
     </LinearLayout>
 

@@ -1,13 +1,10 @@
 package com.curtesmalteser.bakingapp.ui;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +26,9 @@ import butterknife.ButterKnife;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
 
-    private Context mContext;
-    private ArrayList<Step> mStepsArrayList;
-    private ListItemClickListener mOnClickListener;
-    private SparseBooleanArray mSelectedItems;
+    private final ArrayList<Step> mStepsArrayList;
+    private final ListItemClickListener mOnClickListener;
+    private final SparseBooleanArray mSelectedItems;
 
     private static final int INGREDIENT_TV = 0;
     private static final int STEPS_VIEWS = 1;
@@ -41,8 +37,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         void onListItemClick(int step);
     }
 
-    StepsAdapter(Context context, ArrayList<Step> stepsArrayList, ListItemClickListener listItemClickListener) {
-        this.mContext = context;
+    StepsAdapter(ArrayList<Step> stepsArrayList, ListItemClickListener listItemClickListener) {
         this.mStepsArrayList = stepsArrayList;
         this.mOnClickListener = listItemClickListener;
         mSelectedItems = new SparseBooleanArray();
@@ -101,7 +96,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         @BindView(R.id.tvStep)
         TextView tvStep;
 
-        public StepsViewHolder(View itemView) {
+        StepsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
@@ -127,7 +122,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
             mOnClickListener.onListItemClick(getAdapterPosition());
         }
 
-        public void bind(int position) {
+        void bind(int position) {
             final Step step = mStepsArrayList.get(position);
             if (position != INGREDIENT_TV) {
                 tvStep.setText(step.getShortDescription());

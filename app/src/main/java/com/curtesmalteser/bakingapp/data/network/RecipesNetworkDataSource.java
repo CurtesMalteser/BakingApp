@@ -3,7 +3,6 @@ package com.curtesmalteser.bakingapp.data.network;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Context;
 import android.util.Log;
 
 import com.curtesmalteser.bakingapp.AppExecutors;
@@ -31,7 +30,7 @@ public class RecipesNetworkDataSource {
     private final MutableLiveData<List<BakingModel>> mDownloadedRecipes;
     private final AppExecutors mExecutors;
 
-    public RecipesNetworkDataSource(AppExecutors mExecutors) {
+    private RecipesNetworkDataSource(AppExecutors mExecutors) {
         this.mExecutors = mExecutors;
         mDownloadedRecipes = new MutableLiveData<>();
     }
@@ -61,10 +60,8 @@ public class RecipesNetworkDataSource {
                 public void onResponse(Call<List<BakingModel>> call, Response<List<BakingModel>> response) {
                     ArrayList<BakingModel> recipesResponse = new ArrayList<>();
                     if (response.code() == 200) {
-                        Log.d(TAG, "Response from the API ");
-                        for (BakingModel model : response.body()) {
-                            recipesResponse.add(model);
-                        }
+
+                            recipesResponse.addAll(response.body());
 
                         mDownloadedRecipes.postValue(recipesResponse);
                     } else {

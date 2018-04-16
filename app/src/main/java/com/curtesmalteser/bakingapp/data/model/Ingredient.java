@@ -27,15 +27,15 @@ public class Ingredient implements Parcelable{
 
     @SerializedName("quantity")
     @Expose
-    private Double quantity;
+    private final Double quantity;
     @SerializedName("measure")
     @Expose
-    private String measure;
+    private final String measure;
     @SerializedName("ingredient")
     @Expose
-    private String ingredient;
+    private final String ingredient;
 
-    private int recipeId;
+    private final int recipeId;
 
     @Ignore
     public Ingredient(Double quantity, String measure, String ingredient, int recipeId) {

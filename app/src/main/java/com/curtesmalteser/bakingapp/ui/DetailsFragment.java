@@ -7,11 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.InjectorUtils;
@@ -40,7 +38,7 @@ public class DetailsFragment extends Fragment
     @BindView(R.id.stepsRecyclerView)
     RecyclerView mStepsRecyclerView;
 
-    private ArrayList<Step> mStepsList = new ArrayList<>();
+    private final ArrayList<Step> mStepsList = new ArrayList<>();
     private StepsAdapter mStepsAdapter;
     private DetailsActivityViewModel mViewModel;
 
@@ -57,7 +55,7 @@ public class DetailsFragment extends Fragment
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
 
-        mStepsAdapter = new StepsAdapter(getContext(), mStepsList, this);
+        mStepsAdapter = new StepsAdapter(mStepsList, this);
         mStepsRecyclerView.setAdapter(mStepsAdapter);
         mStepsRecyclerView.setHasFixedSize(true);
         mStepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

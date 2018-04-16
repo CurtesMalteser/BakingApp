@@ -10,22 +10,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 
-public class BakingAPIClient {
+class BakingAPIClient {
     private static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
-
-    private static Retrofit retrofit;
 
     public static Retrofit getClient() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
-        retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
 
-        return retrofit;
     }
 }

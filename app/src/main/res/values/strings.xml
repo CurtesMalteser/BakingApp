@@ -1,3 +1,4 @@
+
 <resources>
     <string name="app_name">Baking App</string>
     <string name="servings">Servings:</string>
@@ -11,4 +12,7 @@
     <string name="bundle">bundle</string>
     <string name="string_previous">Previous</string>
     <string name="string_next">Next</string>
+    <string name="string_pause">Pause</string>
+    <string name="string_play">Play</string>
+    <string name="cake_image">Cake Image</string>
 </resources>

@@ -2,22 +2,17 @@ package com.curtesmalteser.bakingapp.ui;
 
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.InjectorUtils;
 import com.curtesmalteser.bakingapp.data.db.FullRecipes;
-import com.curtesmalteser.bakingapp.data.model.BakingModel;
 import com.curtesmalteser.bakingapp.viewmodel.RecipeActivityViewModel;
 import com.curtesmalteser.bakingapp.viewmodel.RecipesActivityViewModelFactory;
 import com.curtesmalteser.bakingapp.widget.BakingAppWidget;
@@ -39,7 +34,7 @@ public class RecipeActivity extends AppCompatActivity
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private ArrayList<FullRecipes> mResultList = new ArrayList<>();
+    private final ArrayList<FullRecipes> mResultList = new ArrayList<>();
 
     private RecipesAdapter mRecipesAdapter;
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -96,16 +91,10 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public void onListItemClick(FullRecipes fullRecipesModel) {
         if (mAppWidgetId != 0) {
-            // When the button is clicked, save the string in our prefs and return that they
-            // clicked OK.
-            saveTitlePref(this, mAppWidgetId, fullRecipesModel.bakingModel.getName());
-
-            // Push widget update to surface with newly set prefix
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
             BakingAppWidget.updateAppWidget(this, appWidgetManager,
                     mAppWidgetId, fullRecipesModel);
 
-            // Make sure we pass back the original appWidgetId
             Intent resultValue = new Intent();
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
             setResult(RESULT_OK, resultValue);
@@ -117,27 +106,5 @@ public class RecipeActivity extends AppCompatActivity
             i.putExtra(getString(R.string.recipe_id), fullRecipesModel.bakingModel.getId());
             startActivity(i);
         }
-    }
-
-    public static String loadTitlePref(Context context, int appWidgetId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String prefix = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null);
-        if (prefix != null) {
-            return prefix;
-        } else {
-            // TODO: 04/04/2018 -->> Fix this preferences
-            //return context.getString(R.string.appwidget_prefix_default);
-            return "appwidget_prefix_default";
-        }
-    }
-
-    // Write the prefix to the SharedPreferences object for this widget
-    static void saveTitlePref(Context context, int appWidgetId, String text) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
-        prefs.commit();
-    }
-
-    public static void deleteTitlePref(Context context, int appWidgetId) {
     }
 }

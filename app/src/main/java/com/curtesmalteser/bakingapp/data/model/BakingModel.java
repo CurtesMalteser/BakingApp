@@ -16,24 +16,24 @@ public class BakingModel {
     @PrimaryKey
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private final Integer id;
     @SerializedName("name")
     @Expose
-    private String name;
+    private final String name;
     @Ignore
     @SerializedName("ingredients")
     @Expose
-    private List<Ingredient> ingredients = null;
+    private final List<Ingredient> ingredients = null;
     @Ignore
     @SerializedName("steps")
     @Expose
-    private List<Step> steps = null;
+    private final List<Step> steps = null;
     @SerializedName("servings")
     @Expose
-    private Integer servings;
+    private final Integer servings;
     @SerializedName("image")
     @Expose
-    private String image;
+    private final String image;
 
     public BakingModel(Integer id, String name, Integer servings, String image) {
         this.id = id;

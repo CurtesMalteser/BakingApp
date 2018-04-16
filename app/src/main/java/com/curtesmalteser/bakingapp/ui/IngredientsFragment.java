@@ -3,15 +3,12 @@ package com.curtesmalteser.bakingapp.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.InjectorUtils;
@@ -34,7 +31,7 @@ public class IngredientsFragment extends Fragment {
     @BindView(R.id.ingredientsRecyclerView)
     RecyclerView mIngredientsRecyclerView;
 
-    private ArrayList<Ingredient> mIngredientsList = new ArrayList<>();
+    private final ArrayList<Ingredient> mIngredientsList = new ArrayList<>();
     private IngredientsAdapter mIngredientsAdapter;
 
     @Override
