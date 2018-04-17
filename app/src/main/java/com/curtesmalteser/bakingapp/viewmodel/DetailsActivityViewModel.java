@@ -33,21 +33,11 @@ public class DetailsActivityViewModel extends ViewModel {
     }
 
     public void setStepScreen(int position) {
-        setVideoPosition(0);
         mStep.setValue(position);
     }
 
     public LiveData<Integer> getStepScreen() {
         return mStep;
-    }
-
-
-    public void setVideoPosition(long videoPosition) {
-       mVideoPosition.setValue(videoPosition);
-    }
-
-    public MutableLiveData<Long> getVideoPosition() {
-        return mVideoPosition;
     }
 
     public void setShowIngredients(boolean showIngredients) {

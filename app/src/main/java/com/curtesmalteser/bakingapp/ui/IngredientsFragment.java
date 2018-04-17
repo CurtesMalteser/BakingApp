@@ -3,9 +3,12 @@ package com.curtesmalteser.bakingapp.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,15 +31,25 @@ public class IngredientsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @BindView(R.id.ingredientsRecyclerView)
     RecyclerView mIngredientsRecyclerView;
 
     private final ArrayList<Ingredient> mIngredientsList = new ArrayList<>();
     private IngredientsAdapter mIngredientsAdapter;
 
+    private Parcelable mStateRecyclerView;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.ui_ingredients, container, false);
 
         ButterKnife.bind(this, v);
@@ -49,16 +62,26 @@ public class IngredientsFragment extends Fragment {
         mIngredientsRecyclerView.setHasFixedSize(true);
         mIngredientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
+        if (savedInstanceState != null)
+            mIngredientsRecyclerView.getLayoutManager().onRestoreInstanceState(mStateRecyclerView);
+
         viewModel.getRecipeById().observe(IngredientsFragment.this, fullRecipes ->
                 {
-                    if (fullRecipes != null)
-                        for (Ingredient ingredient : fullRecipes.ingredientList) {
-                            mIngredientsList.add(ingredient);
-                            mIngredientsAdapter.notifyDataSetChanged();
-                        }
+                    if (fullRecipes != null) {
+                        mIngredientsList.clear();
+                        mIngredientsList.addAll(fullRecipes.ingredientList);
+                        mIngredientsAdapter.notifyDataSetChanged();
+                    }
+
                 }
         );
 
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mStateRecyclerView = mIngredientsRecyclerView.getLayoutManager().onSaveInstanceState();
     }
 }

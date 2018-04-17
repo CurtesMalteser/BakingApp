@@ -3,12 +3,14 @@ package com.curtesmalteser.bakingapp.ui;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.curtesmalteser.bakingapp.R;
 import com.curtesmalteser.bakingapp.data.InjectorUtils;
@@ -26,8 +28,6 @@ import butterknife.ButterKnife;
 public class RecipeActivity extends AppCompatActivity
         implements RecipesAdapter.ListItemClickListener {
 
-    private static final String TAG = RecipeActivity.class.getSimpleName();
-
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
@@ -39,9 +39,7 @@ public class RecipeActivity extends AppCompatActivity
     private RecipesAdapter mRecipesAdapter;
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
-    private static final String PREFS_NAME
-            = "BakingAppPrefs";
-    private static final String PREF_PREFIX_KEY = "prefix_";
+    private Parcelable mStateRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +75,9 @@ public class RecipeActivity extends AppCompatActivity
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
 
+        if (savedInstanceState != null)
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mStateRecyclerView);
+
         viewModel.getRecipes().observe(RecipeActivity.this, fullRecipes -> {
             if (fullRecipes != null && fullRecipes.size() != 0) {
                 mResultList.clear();
@@ -106,5 +107,12 @@ public class RecipeActivity extends AppCompatActivity
             i.putExtra(getString(R.string.recipe_id), fullRecipesModel.bakingModel.getId());
             startActivity(i);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mStateRecyclerView = mRecyclerView.getLayoutManager().onSaveInstanceState();
+
     }
 }

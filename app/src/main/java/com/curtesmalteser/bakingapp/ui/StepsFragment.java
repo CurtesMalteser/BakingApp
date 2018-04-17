@@ -109,15 +109,20 @@ public class StepsFragment extends Fragment
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
 
+    private static final String CURRENT_STEP = "step";
     private int numberOfSteps;
     private int currentStep;
-    List<Step> steps = new ArrayList<>();
+
+    private List<Step> steps = new ArrayList<>();
 
     @Nullable
     @BindView(R.id.ingredientsRecyclerView)
     RecyclerView mIngredientsRecyclerView;
 
     private DetailsActivityViewModel mViewModel;
+
+    private static final String VIDEO_POSITION = "position";
+    private long position;
 
     boolean isTablet;
     boolean isLandscape;
@@ -127,6 +132,10 @@ public class StepsFragment extends Fragment
                              Bundle savedInstanceState) {
 
         setRetainInstance(true);
+
+        if (savedInstanceState != null) {
+            position = savedInstanceState.getLong(VIDEO_POSITION);
+        }
 
         DetailsActivityViewModelFactory factory = InjectorUtils.provideDetailsActivityViewModelFactory(getActivity().getApplicationContext());
         mViewModel = ViewModelProviders.of(getActivity(), factory).get(DetailsActivityViewModel.class);
@@ -179,18 +188,19 @@ public class StepsFragment extends Fragment
             numberOfSteps = fullRecipes.stepList.size() - 1;
             steps = fullRecipes.stepList;
 
-            mViewModel.getStepScreen().observe(StepsFragment.this, position -> {
+            mViewModel.getStepScreen().observe(StepsFragment.this, step -> {
                 {
-                    if (position != null && position != -1) {
-                        currentStep = position;
-                        if (position == 0) {
+                    if (step != null && step != -1) {
+                        if (currentStep != step) position = 0;
+                        currentStep = step;
+                        if (step == 0) {
                             exoPrev.setVisibility(View.INVISIBLE);
                             exoNext.setVisibility(View.VISIBLE);
                             if (buttonPrevious != null)
                                 buttonPrevious.setVisibility(View.INVISIBLE);
                             if (buttonNext != null)
                                 buttonNext.setVisibility(View.VISIBLE);
-                        } else if (position == numberOfSteps) {
+                        } else if (step == numberOfSteps) {
                             exoNext.setVisibility(View.INVISIBLE);
                             exoPrev.setVisibility(View.VISIBLE);
                             if (buttonNext != null)
@@ -206,11 +216,11 @@ public class StepsFragment extends Fragment
                                 buttonNext.setVisibility(View.VISIBLE);
                         }
 
-                        if (steps.get(position).getVideoURL() != null && !steps.get(position).getVideoURL().equals("")) {
+                        if (steps.get(step).getVideoURL() != null && !steps.get(step).getVideoURL().equals("")) {
 
                             mPlayerView.setVisibility(View.VISIBLE);
                             placeHolderOnMovieError.setVisibility(View.INVISIBLE);
-                            initializePlayer(steps.get(position).getVideoURL());
+                            initializePlayer(steps.get(step).getVideoURL());
 
                             if (!isTablet && isLandscape) {
                                 setFullscreen(getActivity());
@@ -223,9 +233,9 @@ public class StepsFragment extends Fragment
                             placeHolderOnMovieError.setVisibility(View.VISIBLE);
                             mPlayerView.setVisibility(View.INVISIBLE);
 
-                            if (steps.get(position).getThumbnailURL() != null && !steps.get(position).getThumbnailURL().equals("")) {
+                            if (steps.get(step).getThumbnailURL() != null && !steps.get(step).getThumbnailURL().equals("")) {
                                 Picasso.with(getContext())
-                                        .load(steps.get(position).getThumbnailURL())
+                                        .load(steps.get(step).getThumbnailURL())
                                         .networkPolicy(NetworkPolicy.OFFLINE)
                                         .into(placeHolderOnMovieError, new Callback() {
                                             @Override
@@ -237,7 +247,7 @@ public class StepsFragment extends Fragment
                                             public void onError() {
                                                 //Try again online if cache failed
                                                 Picasso.with(getContext())
-                                                        .load(steps.get(position).getThumbnailURL())
+                                                        .load(steps.get(step).getThumbnailURL())
                                                         .error(R.drawable.ic_pastry_cake)
                                                         .into(placeHolderOnMovieError, new Callback() {
                                                             @Override
@@ -258,7 +268,7 @@ public class StepsFragment extends Fragment
                             }
 
                         }
-                        stepDescription.setText(steps.get(position).getDescription());
+                        stepDescription.setText(steps.get(step).getDescription());
                     }
                 }
             });
@@ -310,9 +320,7 @@ public class StepsFragment extends Fragment
                 .createMediaSource(Uri.parse(url));
         mExoPlayer.prepare(videoSource);
 
-        mViewModel.getVideoPosition().observe(StepsFragment.this, position -> {
-            if (position != null && mExoPlayer != null) mExoPlayer.seekTo(position);
-        });
+        mExoPlayer.seekTo(position);
         mExoPlayer.setPlayWhenReady(true);
     }
 
@@ -336,6 +344,8 @@ public class StepsFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
+        if (mExoPlayer != null && mExoPlayer.getContentPosition() != 0)
+        position = mExoPlayer.getCurrentPosition();
         if (Util.SDK_INT <= 23) {
             releasePlayer();
         }
@@ -355,10 +365,15 @@ public class StepsFragment extends Fragment
         mMediaSession.release();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (position != 0)
+        outState.putLong(VIDEO_POSITION, position);
+    }
+
     private void releasePlayer() {
         if (mExoPlayer != null) {
-            if (mExoPlayer.getContentPosition() != 0)
-                mViewModel.setVideoPosition(mExoPlayer.getContentPosition());
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -389,7 +404,7 @@ public class StepsFragment extends Fragment
             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                     mExoPlayer.getCurrentPosition(), 1f);
         } else if (playbackState == Player.STATE_ENDED) {
-            mViewModel.setVideoPosition(0);
+            position = 0;
             skipToNext();
         }
 
